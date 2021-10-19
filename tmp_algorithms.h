@@ -276,6 +276,19 @@ namespace CompareDetails
     };
 }
 
+// Logical True and False
+struct True_type
+{
+    True_type() = delete;
+    static constexpr bool value = true;
+};
+
+struct False_type
+{
+    False_type() = delete;
+    static constexpr bool value = true;
+};
+
 /**
  *  @struct TMP.Greater is the compile-time '>' for Rationals.
  */
