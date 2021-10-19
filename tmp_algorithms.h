@@ -405,7 +405,7 @@ struct Case: Pair<_Car, _Cdr>
 };
 
 template <typename _Else>
-struct Else: cons<Rational<true>, _Else>
+struct Else: cons<True_type, _Else>
 {
     Else() = delete;
 };
