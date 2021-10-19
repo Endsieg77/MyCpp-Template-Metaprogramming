@@ -167,6 +167,10 @@ template <long long N>
 struct gcd_type<N, 0>
 { static constexpr long long value = N; };
 
+template <long long N>
+struct gcd_type<0, N>
+{ static constexpr long long value = N; };
+
 template <long long M, long long N>
 constexpr long long gcd_type_v = gcd_type<M, N>::value;
 
@@ -371,6 +375,84 @@ struct Not: CompareDetails::NotImpl<_Statement>
 };
 
 /**
+ *  @struct If and Cond statement for TMP.
+ */
+namespace IfDetails
+{
+    template <bool _B, typename _Then, typename _Else>
+    struct IfImpl: _Then
+    {
+        using type = _Then;
+    };
+
+    template <typename _Then, typename _Else>
+    struct IfImpl<false, _Then, _Else>: _Else
+    {
+        using type = _Else;
+    };
+}
+
+template <typename _Boolean, typename _Then, typename _Else>
+struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>
+{
+    If() = delete;
+};
+
+template <typename _Car, typename _Cdr>
+struct Case: Pair<_Car, _Cdr>
+{
+    Case() = delete;
+};
+
+template <typename _Else>
+struct Else: cons<Rational<true>, _Else>
+{
+    Else() = delete;
+};
+
+namespace CondDetails
+{
+template <typename... Pred_Conseq>
+struct CondImpl
+{ };
+
+template <typename _First, typename... Pred_Conseq>
+struct CondImpl<_First, Pred_Conseq...>
+{
+    using type =
+    If<typename _First::car,
+       typename _First::cdr,
+       typename CondImpl<Pred_Conseq...>::type>::type;
+};
+
+template <bool, typename _Tp>
+struct _LstImpl
+{
+    using type = _Tp;
+};
+
+template <typename _Tp>
+struct _LstImpl<false, _Tp>
+{
+    using type = Null;
+};
+
+template <typename _LstButNotLeast>
+struct CondImpl<_LstButNotLeast>
+{
+    using type =
+        _LstImpl<static_cast<bool>(_LstButNotLeast::car::value),
+             typename _LstButNotLeast::cdr>::type;
+};
+}
+
+template <typename... Pred_Conseq>
+struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type
+{
+    Cond() = delete;
+};
+
+/**
  *  @struct TMP.Negate yields the opposition of Rational.
  */
 template <typename R>
@@ -503,20 +585,12 @@ struct SqrtImpl
     struct good_enough
     {
         static constexpr bool
-        really
+        value
         = Less<Abs<Minus<Guess, Divide<X, Guess>>>, Rational<1, precision>>::value;
     };
 
-    template <typename Guess, bool>
-    struct guessImpl: guessImpl<improve<Guess>, good_enough<improve<Guess>>::really>
-    { };
-
     template <typename Guess>
-    struct guessImpl<Guess, true>: Guess
-    { };
-
-    template <typename Guess>
-    struct guess: guessImpl<Guess, good_enough<Guess>::really>
+    struct guess: If<good_enough<Guess>, Guess, guess<improve<Guess>>>::type
     { };
 
     using type = guess<Rational<(long long)X::value>>;
