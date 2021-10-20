@@ -1,33 +1,43 @@
+/**
+ *  @file   myfunctional.h
+ *  @author Offensive77
+ *  @brief  My personally implemented Function template.
+ *          Defined in namespace TMP.
+ *  @modified: 2021/10/20 Wed.
+ */
 #ifndef _MY_FUNCTIONAL_H_
 #define _MY_FUNCTIONAL_H_
 
-namespace TMP
-{
+TMP_BEGIN
+
 template <typename... _Tp>
-class f_wrapper
+class Function
 {
-    f_wrapper() = delete;
+    Function() = delete;
 };
 
 template <typename _Ret, typename... _Params>
-class f_wrapper<_Ret(_Params...)>
+class Function<_Ret(_Params...)>
 {
-    using type = f_wrapper<_Ret(_Params...)>;
+    using type       = Function<_Ret(_Params...)>;
+    using value_type = _Ret(*)(_Params...);
 public:
 #if __cplusplus >= 201103L && __cplusplus < 202002L
     template <typename _Tp,
-              typename = std::enable_if<std::is_convertible<_Tp, _Ret(*)(_Params...)>::value>::type>
-    f_wrapper(_Tp
+              typename = typename std::enable_if<std::is_convertible<_Tp, value_type>::value>::type>
+    Function(_Tp
 #elif __cplusplus >= 202002L
-    f_wrapper(std::convertible_to<_Ret(*)(_Params...)> auto
+    Function(std::convertible_to<_Ret(*)(_Params...)> auto
 #endif
       &&fp)
-        : _fp(fp) { };
-    type &operator=(_Ret(*fp)(_Params...)) { _fp = fp; };
-    _Ret operator()(_Params... param) const { return _fp(param...); };
+        : _fp(std::move(fp)) { };
+    type &operator=(value_type fp) { _fp = fp; };
+    constexpr _Ret operator()(_Params&&... param) const
+    { return _fp(std::forward<_Params>(param)...); };
 private:
-    _Ret (*_fp)(_Params...);
+    value_type _fp = nullptr;
 };
-};
+
+TMP_END
 
 #endif

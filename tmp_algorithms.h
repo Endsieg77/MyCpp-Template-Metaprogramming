@@ -8,8 +8,8 @@
 #ifndef _TMP_ALGORITHMS_H_
 #define _TMP_ALGORITHMS_H_
 
-namespace TMP
-{
+TMP_BEGIN
+
 /**
  *  @struct TMP.Null functions behind the curtain.
  */
@@ -17,6 +17,12 @@ struct Null
 {
     Null() = delete;
 };
+
+/**
+ *  @a Eval evaluates the template _Tp's value member.
+ */
+template <typename _Tp>
+constexpr long long Eval = _Tp::value;
 
 template <typename _Car, typename _Cdr = Null>
 struct Pair
@@ -27,6 +33,7 @@ struct Pair
 };
 
 /** 
+ *  @brief  scheme-style cons.
  *  @struct TMP.cons as elements combinator.
  *  @param _Car represents the first element,
  *  @param _Cdr the second.
@@ -38,6 +45,7 @@ struct cons: Pair<_Car, _Cdr>
 };
 
 /** 
+ *  @brief  scheme-style car
  *  @struct TMP.car yield first element of cons
  */
 template <typename Cons>
@@ -47,6 +55,7 @@ struct car: Cons::car
 };
 
 /** 
+ *  @brief  scheme-style cdr
  *  @struct TMP.cdr yield second element of cons
  */
 template <typename Cons>
@@ -112,6 +121,13 @@ template <long long _From, long long _To, long long _Step = 1, auto _F = [](long
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #else // _HAS_NO_CXX20
+
+template <int N = 0>
+struct Identity
+{
+    static constexpr int value = N;
+    static constexpr int _call_(int &&n) { return n; }
+};
 
 namespace RangeSumDetails
 {
@@ -220,6 +236,20 @@ struct Rational<_Q>
     static constexpr double    value     = _Q;
     static std::string to_string()
     { return std::to_string(num); }
+};
+
+template <typename R>
+struct Numer
+{
+    Numer() = delete;
+    static constexpr long long value = R::num;
+};
+
+template <typename R>
+struct Denom
+{
+    Denom() = delete;
+    static constexpr long long value = R::denom;
 };
 
 /** 
@@ -439,6 +469,7 @@ template <typename _First, typename... Pred_Conseq>
 struct CondImpl<_First, Pred_Conseq...>
 {
     using type =
+    typename
     If<typename _First::car,
        typename _First::cdr,
        typename CondImpl<Pred_Conseq...>::type>::type;
@@ -465,6 +496,7 @@ template <typename _LstButNotLeast>
 struct CondImpl<_LstButNotLeast>
 {
     using type =
+        typename
         _LstImpl<static_cast<bool>(_LstButNotLeast::car::value),
                  typename _LstButNotLeast::cdr>::type;
 };
@@ -649,6 +681,6 @@ struct Sqrt: SqrtDetails::SqrtImpl<X, precision>::type
     Sqrt() = delete;
 };
 
-}
+TMP_END
 
 #endif
