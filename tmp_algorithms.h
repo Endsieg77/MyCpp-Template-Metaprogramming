@@ -28,7 +28,7 @@ struct Null
  *  @a Eval evaluates the template _Tp's value member.
  */
 template <typename _Tp>
-constexpr long long Eval = _Tp::value;
+constexpr auto Eval = _Tp::value;
 
 template <typename _Car, typename _Cdr = Null>
 struct Pair
