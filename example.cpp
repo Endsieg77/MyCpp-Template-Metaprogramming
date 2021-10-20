@@ -17,19 +17,21 @@ int main()
     using r3 = TMP::Rational<15, 2>;
     using r4 = TMP::Rational<1>;
 
-    cout << TMP::Sqrt<TMP::Rational<1191ll, 443ll>>::value << endl;
+    cout << Eval<Sqrt<TMP::Rational<2>>> << endl;
+    cout << Eval<Sqrt<Rational<414, 567>>> << endl;
 
     using _if = TMP::If<Greater<r1, r2>, r1, r2>;
-    cout << _if::value << endl;
+    cout << Eval<_if> << endl;
     
     using _res =
     Cond<
         Case<And<Less<r2, r1>, Less<r4, r1>>, r1>,
-        Case<Or<Less<r3, r2>, Not<LessEqual<r4, r0>>>, r2>,
+        Case<Or<Less<r3, r2>, LessEqual<r4, r0>>, r2>,
         Case<Greater<r0, r4>, r4>,
-        Else<r3>>;
+        Else<r3>,
+        Else<r4>>;
         
-    cout << _res::value << endl;
+    cout << Eval<_res> << endl;
 
     return 0;
 }

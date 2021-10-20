@@ -192,10 +192,6 @@ template <long long N>
 struct gcd_type<N, 0>
 { static constexpr long long value = N; };
 
-template <long long N>
-struct gcd_type<0, N>
-{ static constexpr long long value = N; };
-
 template <long long M, long long N>
 constexpr long long gcd_type_v = gcd_type<M, N>::value;
 
@@ -221,7 +217,7 @@ constexpr long long lcm_type_v = lcm_type<M, N>::value;
 template <long long _Q, long long _P = 1>
 struct Rational
 {
-    static_assert(_P, "Divide Zero Is Not Valid!");
+    static_assert(_P, "Divide Zero Exception!");
     Rational() = delete;
     static constexpr long long  num   = _Q / gcd_type_v<_Q, _P>;
     static constexpr long long  denom = _P / gcd_type_v<_Q, _P>;
@@ -237,9 +233,9 @@ struct Rational
 template <long long _Q>
 struct Rational<_Q>
 {
-    static constexpr long long num     = _Q;
-    static constexpr long long denom       = 1;
-    static constexpr double    value     = _Q;
+    static constexpr long long num   = _Q;
+    static constexpr long long denom = 1;
+    static constexpr double    value = _Q;
     static std::string to_string()
     { return std::to_string(num); }
 };
@@ -668,7 +664,7 @@ struct SqrtImpl
     struct _try: If<good_enough<Guess>, Guess, _try<improve<Guess>>>::type
     { };
 
-    using type = _try<Rational<(long long)X::value>>;
+    using type = _try<Rational<1>>;
 };
 }
 
