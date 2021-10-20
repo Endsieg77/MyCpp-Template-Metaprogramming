@@ -8,9 +8,11 @@
 #ifndef _TMP_ALGORITHMS_H_
 #define _TMP_ALGORITHMS_H_
 
-
 namespace TMP
 {
+/**
+ *  @struct TMP.Null functions behind the curtain.
+ */
 struct Null
 {
     Null() = delete;
@@ -61,14 +63,13 @@ namespace RangeSumDetails
     template <long long _From, long long _To, long long _Step, auto _F, bool _Stop, long long _Res = 0>
     struct RangeSumImpl:
         RangeSumImpl<
-                _From + _Step,
-                _To,
-                _Step,
-                _F,
-                (_From + _Step >= _To && _Step > 0) ||
-                (_From + _Step <= _To && _Step < 0),
-                _Res + _F(_From)
-            >
+            _From + _Step,
+            _To,
+            _Step,
+            _F,
+            (_From + _Step >= _To && _Step > 0) ||
+            (_From + _Step <= _To && _Step < 0),
+            _Res + _F(_From)>
     { };
 
     template <long long _From, long long _To, long long _Step, auto _F, long long _Res>
@@ -111,6 +112,7 @@ template <long long _From, long long _To, long long _Step = 1, auto _F = [](long
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #else // _HAS_NO_CXX20
+
 namespace RangeSumDetails
 {
     template <long long _From, long long _To, long long _Step, typename _F, bool _Stop>
@@ -151,6 +153,7 @@ struct RangeSum:
 
 template <long long _From, long long _To, long long _Step = 1, typename _F = Identity<>>
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
+
 #endif
 
 /** 
@@ -191,18 +194,18 @@ constexpr long long lcm_type_v = lcm_type<M, N>::value;
 /** 
  *  @struct TMP.Rational implements the Rational template.
  *          It uses gcd_type for compile-time simplification.
- *  @param _Q is the denominator, @param _P the numerator.
+ *  @param _Q is the numerator, @param _P the denominator.
  */
 template <long long _Q, long long _P = 1>
 struct Rational
 {
     static_assert(_P, "Divide Zero Is Not Valid!");
     Rational() = delete;
-    static constexpr long long  denom = _Q / gcd_type_v<_Q, _P>;
-    static constexpr long long  num   = _P / gcd_type_v<_Q, _P>;
+    static constexpr long long  num   = _Q / gcd_type_v<_Q, _P>;
+    static constexpr long long  denom = _P / gcd_type_v<_Q, _P>;
     static constexpr double     value = static_cast<double>(_Q) / _P;
     static std::string to_string()
-    { return std::to_string(denom) + "/" + std::to_string(num); }
+    { return std::to_string(num) + "/" + std::to_string(denom); }
 };
 
 /** 
@@ -212,11 +215,11 @@ struct Rational
 template <long long _Q>
 struct Rational<_Q>
 {
-    static constexpr long long denom     = _Q;
-    static constexpr long long num       = 1;
+    static constexpr long long num     = _Q;
+    static constexpr long long denom       = 1;
     static constexpr double    value     = _Q;
     static std::string to_string()
-    { return std::to_string(denom); }
+    { return std::to_string(num); }
 };
 
 /** 
@@ -228,13 +231,13 @@ namespace CompareDetails
     template <typename _Lhs, typename _Rhs>
     struct GreaterImpl
     {
-        static constexpr bool value = _Lhs::denom * _Rhs::num > _Rhs::denom * _Lhs::num;
+        static constexpr bool value = _Lhs::num * _Rhs::denom > _Rhs::num * _Lhs::denom;
     };
 
     template <typename _Lhs, typename _Rhs>
     struct LessImpl
     {
-        static constexpr bool value = _Lhs::denom * _Rhs::num < _Rhs::denom * _Lhs::num;
+        static constexpr bool value = _Lhs::num * _Rhs::denom < _Rhs::num * _Lhs::denom;
     };
 
     template <typename _Lhs, typename _Rhs>
@@ -392,18 +395,34 @@ namespace IfDetails
     };
 }
 
+/**
+ *  @struct TMP.If. 
+ *  @brief This implements if...else structure
+ *  @param Boolean has a static bool member called value.
+ *  When Boolean::value is true. If::type is @param _Then's,
+ *  else @param _Else's.
+ */
 template <typename _Boolean, typename _Then, typename _Else>
 struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>
 {
     If() = delete;
 };
 
-template <typename _Car, typename _Cdr>
-struct Case: Pair<_Car, _Cdr>
+/**
+ *  @struct TMP.Case
+ *  @brief Cond structure's branches.
+ */
+template <typename _Pred, typename _Conseq>
+struct Case: Pair<_Pred, _Conseq>
 {
     Case() = delete;
 };
 
+/**
+ *  @struct TMP.Else
+ *  @brief The default choice of condition statement,
+ *         Iin which it also causes logical short-circuit.
+ */
 template <typename _Else>
 struct Else: cons<True_type, _Else>
 {
@@ -425,6 +444,11 @@ struct CondImpl<_First, Pred_Conseq...>
        typename CondImpl<Pred_Conseq...>::type>::type;
 };
 
+/**
+ *  @struct _LstImpl. The last branch should not be
+ *          seen as least important. On contrary, 
+ *          It shall be dealt with more cautiously.
+ */
 template <bool, typename _Tp>
 struct _LstImpl
 {
@@ -442,7 +466,7 @@ struct CondImpl<_LstButNotLeast>
 {
     using type =
         _LstImpl<static_cast<bool>(_LstButNotLeast::car::value),
-             typename _LstButNotLeast::cdr>::type;
+                 typename _LstButNotLeast::cdr>::type;
 };
 }
 
@@ -459,11 +483,11 @@ template <typename R>
 struct Negate
 {
     Negate() = delete;
-    static constexpr long long denom  = -R::denom;
-    static constexpr long long num    =  R::num;
+    static constexpr long long num    = -R::num;
+    static constexpr long long denom  =  R::denom;
     static constexpr double    value  = -R::value;
     static std::string to_string()
-    { return Rational<denom, num>::to_string(); }
+    { return Rational<num, denom>::to_string(); }
 };
 
 namespace AbsDetails
@@ -490,7 +514,7 @@ struct Abs: AbsDetails::AbsImpl<R, Greater<R, Rational<0>>::value>
  *  @struct TMP.Square yields square of Rational.
  */
 template <typename R>
-struct Square: Rational<R::denom * R::denom, R::num * R::num>
+struct Square: Rational<R::num * R::num, R::denom * R::denom>
 {
     Square() = delete;
 };
@@ -501,44 +525,40 @@ struct Square: Rational<R::denom * R::denom, R::num * R::num>
  */
 namespace BasicDetails
 {
-    template <typename...>
-    struct ArithmeticBases
-    { };
-
     template <typename _Lhs, typename _Rhs>
-    struct ArithmeticBases<_Lhs, _Rhs>
+    struct ArithmeticBases
     {
-        static constexpr long long _de = lcm_type_v<_Lhs::num, _Rhs::num>;
-        static constexpr long long __1 = _de / _Lhs::num;
-        static constexpr long long __2 = _de / _Rhs::num;
-        static constexpr long long _vl = __1 * _Lhs::denom;
-        static constexpr long long _vr = __2 * _Rhs::denom;
+        static constexpr long long _nu = lcm_type_v<_Lhs::denom, _Rhs::denom>;
+        static constexpr long long _ml = _nu / _Lhs::denom;
+        static constexpr long long _mr = _nu / _Rhs::denom;
+        static constexpr long long _vl = _ml * _Lhs::num;
+        static constexpr long long _vr = _mr * _Rhs::num;
     };
 
     template <typename _Lhs, typename _Rhs>
     struct PlusImpl
     {
-        using utils = BasicDetails::ArithmeticBases<_Lhs, _Rhs>;
-        using type  = Rational<utils::_vl + utils::_vr, utils::_de>;
+        using utils = ArithmeticBases<_Lhs, _Rhs>;
+        using type  = Rational<utils::_vl + utils::_vr, utils::_nu>;
     };
 
     template <typename _Lhs, typename _Rhs>
     struct MinusImpl
     {
-        using utils = BasicDetails::ArithmeticBases<_Lhs, _Rhs>;
-        using type  = Rational<utils::_vl - utils::_vr, utils::_de>;
+        using utils = ArithmeticBases<_Lhs, _Rhs>;
+        using type  = Rational<utils::_vl - utils::_vr, utils::_nu>;
     };
 
     template <typename _Lhs, typename _Rhs>
     struct MultiplyImpl
     {
-        using type  = Rational<_Lhs::denom * _Rhs::denom, _Lhs::num * _Rhs::num>;
+        using type  = Rational<_Lhs::num * _Rhs::num, _Lhs::denom * _Rhs::denom>;
     };
 
     template <typename _Lhs, typename _Rhs>
     struct DivideImpl
     {
-        using type  = Rational<_Lhs::denom * _Rhs::num, _Lhs::num * _Rhs::denom>;
+        using type  = Rational<_Lhs::num * _Rhs::denom, _Lhs::denom * _Rhs::num>;
     };
 };
 
@@ -566,12 +586,29 @@ struct Divide: BasicDetails::DivideImpl<_Lhs, _Rhs>::type
     Divide() = delete;
 };
 
+template <typename R>
+struct Increment: Plus<R, Rational<1>>
+{
+    Increment() = delete;
+};
+
+template <typename R>
+struct Decrement: Minus<R, Rational<1>>
+{
+    Decrement() = delete;
+};
+
 template <typename _Lhs, typename _Rhs>
 struct Average: Divide<Plus<_Lhs, _Rhs>, Rational<2>>
 {
     Average() = delete;
 };
 
+/** 
+ *  This implementation too some degree draws
+ *  on the thinking of SICP. MIT, Using Heron
+ *  Method.
+ */
 namespace SqrtDetails
 {
 template <typename X, long long precision = 0xffffff>
@@ -590,15 +627,21 @@ struct SqrtImpl
     };
 
     template <typename Guess>
-    struct guess: If<good_enough<Guess>, Guess, guess<improve<Guess>>>::type
+    struct _try: If<good_enough<Guess>, Guess, _try<improve<Guess>>>::type
     { };
 
-    using type = guess<Rational<(long long)X::value>>;
+    using type = _try<Rational<(long long)X::value>>;
 };
 }
 
-/** 
- * @struct TMP.Sqrt Compile-time Square root. Yahooooo!
+/**
+ *  @struct TMP.Sqrt Compile-time Square root. Yahooooo!
+ *  It receives @param X.
+ *  @return square root of X by its value member.
+ *  If the form of X is too complicated, the program may
+ *  meet with an integer overflow.
+ *  @param precision means the result will fall on the area
+ *  O(answer, 1/@param precision)
  */
 template <typename X, long long precision = 0xffffff>
 struct Sqrt: SqrtDetails::SqrtImpl<X, precision>::type
