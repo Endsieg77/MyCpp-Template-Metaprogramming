@@ -8,6 +8,12 @@
 
 #ifndef _TMP_COMPLEX_H_
 #define _TMP_COMPLEX_H_
+#ifndef TMP_BEGIN
+#define TMP_BEGIN namespace TMP {
+#endif
+#ifndef TMP_END
+#define TMP_END   }
+#endif
 
 TMP_BEGIN
 

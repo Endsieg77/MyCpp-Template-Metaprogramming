@@ -5,8 +5,15 @@
  *          Defined in namespace TMP.
  *  @modified: 2021/10/20 Wed.
  */
+
 #ifndef _MY_FUNCTIONAL_H_
 #define _MY_FUNCTIONAL_H_
+#ifndef TMP_BEGIN
+#define TMP_BEGIN namespace TMP {
+#endif
+#ifndef TMP_END
+#define TMP_END   }
+#endif
 
 TMP_BEGIN
 

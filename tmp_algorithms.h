@@ -2,11 +2,17 @@
  *  @file   tmp_algorithms.h
  *  @author Offensive77
  *  @brief  This header defines the algorithms of CTMP.
- *  @modified: 2021/10/19 Tues.
+ *  @modified: 2021/10/20 Wed.
  */
 
 #ifndef _TMP_ALGORITHMS_H_
 #define _TMP_ALGORITHMS_H_
+#ifndef TMP_BEGIN
+#define TMP_BEGIN namespace TMP {
+#endif
+#ifndef TMP_END
+#define TMP_END   }
+#endif
 
 TMP_BEGIN
 
