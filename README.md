@@ -2,6 +2,8 @@
 
 My Library for simple CTMP
 
+Before we start, make sure your `C++` standard is over ISO-C++11.
+
 ## Start
 
 ```cpp
