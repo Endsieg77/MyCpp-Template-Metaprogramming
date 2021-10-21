@@ -17,11 +17,23 @@
 #define TMP_END   }
 #endif
 
+TMP_BEGIN
+
+/**
+ *  @a Eval evaluates the template _Tp's value member.
+ */
+template <typename _Tp>
+constexpr auto Eval = _Tp::value;
+
+TMP_END
+
 #include <string>
 #include <utility>
 #include "tmp_traits.h"
+#include "tmp_comparisons.h"
+#include "tmp_rational.h"
+#include "tmp_complex.h"
 #include "tmp_algorithms.h"
 #include "myfunctional.h"
-#include "tmp_complex.h"
 
 #endif
