@@ -2,7 +2,7 @@
  *  @file   tmp_algorithms.h
  *  @author Offensive77
  *  @brief  This header defines the algorithms of CTMP.
- *  @modified: 2021/10/20 Wed.
+ *  @modified: 2021/10/21 Thurs.
  */
 
 #ifndef _TMP_ALGORITHMS_H_
@@ -34,8 +34,9 @@ template <typename _Car, typename _Cdr = Null>
 struct Pair
 {
     Pair() = delete;
-    using car = _Car;
-    using cdr = _Cdr;
+    using type = Pair;
+    using car  = _Car;
+    using cdr  = _Cdr;
 };
 
 /** 
@@ -75,15 +76,15 @@ struct cdr: Cons::cdr
 // RangeSum implementation details are hidden here:
 namespace RangeSumDetails
 {
-    template <long long _From, long long _To, long long _Step, auto _F, bool _Stop, long long _Res = 0>
+    template <long long _From, long long _To, long long _Step, auto _F, bool _Stop, long long _Res = 0LL>
     struct RangeSumImpl:
         RangeSumImpl<
             _From + _Step,
             _To,
             _Step,
             _F,
-            (_From + _Step >= _To && _Step > 0) ||
-            (_From + _Step <= _To && _Step < 0),
+            (_From + _Step >= _To && _Step > 0LL) ||
+            (_From + _Step <= _To && _Step < 0LL),
             _Res + _F(_From)>
     { };
 
@@ -100,15 +101,15 @@ namespace RangeSumDetails
  *         when @param _F is enabled, you must explicitly
  *         assign a step for the template.
  */
-template <long long _From, long long _To, long long _Step = 1, auto _F = [](long long &&_){ return _; }>
+template <long long _From, long long _To, long long _Step = 1LL, auto _F = [](long long &&_){ return _; }>
 struct RangeSum:
     RangeSumDetails::RangeSumImpl<
         _From,
         _To,
         _Step,
         _F,
-        (_From >= _To && _Step > 0) ||
-        (_From <= _To && _Step < 0)>
+        (_From >= _To && _Step > 0LL) ||
+        (_From <= _To && _Step < 0LL)>
 {
     RangeSum() = delete;
 };
@@ -119,16 +120,16 @@ struct RangeSum:
  *          value member.
  */
 template <long long _From, long long _To, auto _F>
-struct RangeSum<_From, _To, 0, _F>
+struct RangeSum<_From, _To, 0LL, _F>
 { };
 
 // Variable with params (After C++ 17)
-template <long long _From, long long _To, long long _Step = 1, auto _F = [](long long &&_){return _;}>
+template <long long _From, long long _To, long long _Step = 1LL, auto _F = [](long long &&_){return _;}>
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #else // _HAS_NO_CXX20
 
-template <int N = 0>
+template <int N = 0LL>
 struct Identity
 {
     static constexpr int value = N;
@@ -149,31 +150,31 @@ namespace RangeSumDetails
             _To,
             _Step,
             _F,
-            (_From + _Step >= _To && _Step > 0) ||
-            (_From + _Step <= _To && _Step < 0)
+            (_From + _Step >= _To && _Step > 0LL) ||
+            (_From + _Step <= _To && _Step < 0LL)
         >::value;
     };
 
     template <long long _From, long long _To, long long _Step, typename _F>
     struct RangeSumImpl<_From, _To, _Step, _F, true>
-    { static constexpr long long value = 0; };
+    { static constexpr long long value = 0LL; };
 }
 
-template <long long _From, long long _To, long long _Step = 1, typename _F = Identity<>>
+template <long long _From, long long _To, long long _Step = 1LL, typename _F = Identity<>>
 struct RangeSum:
     RangeSumDetails::RangeSumImpl<
         _From,
         _To,
         _Step,
         _F,
-        (_From >= _To && _Step > 0) ||
-        (_From <= _To && _Step < 0)>
+        (_From >= _To && _Step > 0LL) ||
+        (_From <= _To && _Step < 0LL)>
 {
     RangeSum() = delete;
     static constexpr long long _call_() { return RangeSum<_From, _To, _Step, _F>::value; }
 };
 
-template <long long _From, long long _To, long long _Step = 1, typename _F = Identity<>>
+template <long long _From, long long _To, long long _Step = 1LL, typename _F = Identity<>>
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #endif
@@ -209,6 +210,22 @@ struct lcm_type
 template <long long M, long long N>
 constexpr long long lcm_type_v = lcm_type<M, N>::value;
 
+struct Infinity
+{
+    Infinity() = delete;
+    static constexpr long long num   = 1LL;
+    static constexpr long long denom = 0LL;
+    static constexpr tag_type  tag   = (long long)Tags::rational;
+};
+
+struct NegInfinity
+{
+    NegInfinity() = delete;
+    __TAGS__(Tags::rational)
+    static constexpr long long num   = -1LL;
+    static constexpr long long denom = 0LL;
+};
+
 /** 
  *  @struct TMP.Rational implements the Rational template.
  *          It uses gcd_type for compile-time simplification.
@@ -219,11 +236,12 @@ struct Rational
 {
     static_assert(_P, "Divide Zero Exception!");
     Rational() = delete;
-    static constexpr long long  num   = _Q / gcd_type_v<_Q, _P>;
-    static constexpr long long  denom = _P / gcd_type_v<_Q, _P>;
-    static constexpr double     value = static_cast<double>(_Q) / _P;
+    static constexpr long long num   = _Q / gcd_type_v<_Q, _P>;
+    static constexpr long long denom = _P / gcd_type_v<_Q, _P>;
+    static constexpr double    value = static_cast<double>(_Q) / _P;
     static std::string to_string()
     { return std::to_string(num) + "/" + std::to_string(denom); }
+    __TAGS__((tag_type)Tags::rational, (denom == 1ULL ? (tag_type)Tags::integer : 0ULL));
 };
 
 /** 
@@ -233,24 +251,37 @@ struct Rational
 template <long long _Q>
 struct Rational<_Q>
 {
+    Rational() = delete;
+    __TAGS__(Tags::rational, Tags::integer);
     static constexpr long long num   = _Q;
-    static constexpr long long denom = 1;
-    static constexpr double    value = _Q;
+    static constexpr long long denom = 1LL;
+    static constexpr long long value = _Q;
     static std::string to_string()
-    { return std::to_string(num); }
+    { return std::to_string(value); }
+};
+
+template <long long _Num>
+struct Integer: Rational<_Num>
+{
+    __TAGS__(Tags::rational, Tags::integer);
+    Integer() = delete;
 };
 
 template <typename R>
-struct Numer
+struct Numer: Integer<R::num>
 {
+    static_assert(Eval<IsRational<R>>, "Arguement MUST be Rational.");
     Numer() = delete;
+    __TAGS__(Tags::integer);
     static constexpr long long value = R::num;
 };
 
 template <typename R>
-struct Denom
+struct Denom: Integer<R::denom>
 {
+    static_assert(Eval<IsRational<R>>, "Arguement MUST be Rational.");
     Denom() = delete;
+    __TAGS__(Tags::integer);
     static constexpr long long value = R::denom;
 };
 
@@ -260,71 +291,109 @@ struct Denom
  */
 namespace CompareDetails
 {
-    template <typename _Lhs, typename _Rhs>
+    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
     struct GreaterImpl
     {
         static constexpr bool value = _Lhs::num * _Rhs::denom > _Rhs::num * _Lhs::denom;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct GreaterImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
     struct LessImpl
     {
         static constexpr bool value = _Lhs::num * _Rhs::denom < _Rhs::num * _Lhs::denom;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct LessImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
     struct EqualImpl
     {
         static constexpr bool value = _Lhs::denom * _Rhs::num == _Rhs::denom * _Lhs::num;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct EqualImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
     struct NotEqualImpl
     {
         static constexpr bool value = _Lhs::denom * _Rhs::num != _Rhs::denom * _Lhs::num;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct NotEqualImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
     struct GreaterEqualImpl
     {
         static constexpr bool value = GreaterImpl<_Lhs, _Rhs>::value || EqualImpl<_Lhs, _Rhs>::value;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct GreaterEqualImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
     struct LessEqualImpl
     {
         static constexpr bool value = LessImpl<_Lhs, _Rhs>::value || EqualImpl<_Lhs, _Rhs>::value;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct LessEqualImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Lhs, typename _Rhs, bool _isAllBoolean = true>
     struct AndImpl
     {
         static constexpr bool value = _Lhs::value && _Rhs::value;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct AndImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Lhs, typename _Rhs, bool _isAllBoolean = true>
     struct OrImpl
     {
         static constexpr bool value = _Lhs::value || _Rhs::value;
     };
 
-    template <typename _Statement>
+    template <typename _Lhs, typename _Rhs>
+    struct OrImpl<_Lhs, _Rhs, false>
+    { };
+
+    template <typename _Statement, bool _isBoolean = true>
     struct NotImpl
     {
         static constexpr bool value = !_Statement::value;
     };
+
+    template <typename _Statement>
+    struct NotImpl<_Statement, false>
+    { };
 }
 
 // Logical True and False
 struct True_type
 {
     True_type() = delete;
-    static constexpr bool value = true;
+    __TAGS__(Tags::boolean)
+    static constexpr bool   value = true;
 };
 
 struct False_type
 {
     False_type() = delete;
+    __TAGS__(Tags::boolean)
     static constexpr bool value = true;
 };
 
@@ -332,8 +401,10 @@ struct False_type
  *  @struct TMP.Greater is the compile-time '>' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct Greater: CompareDetails::GreaterImpl<_Lhs, _Rhs>
+struct Greater
+    : CompareDetails::GreaterImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
 {
+    __TAGS__(Tags::boolean)
     Greater() = delete;
 };
 
@@ -341,72 +412,87 @@ struct Greater: CompareDetails::GreaterImpl<_Lhs, _Rhs>
  *  @struct TMP.Less is the compile-time '<' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct Less: CompareDetails::LessImpl<_Lhs, _Rhs>
+struct Less
+    : CompareDetails::LessImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
 {
     Less() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
  *  @struct TMP.Equal is the compile-time '==' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct Equal: CompareDetails::EqualImpl<_Lhs, _Rhs>
+struct Equal
+    : CompareDetails::EqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
 {
     Equal() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
  *  @struct TMP.NotEqual is the compile-time '!=' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct NotEqual: CompareDetails::NotEqualImpl<_Lhs, _Rhs>
+struct NotEqual
+    : CompareDetails::NotEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
 {
     NotEqual() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
  *  @struct TMP.GreaterEqual is the compile-time '>=' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct GreaterEqual: CompareDetails::GreaterEqualImpl<_Lhs, _Rhs>
+struct GreaterEqual
+    : CompareDetails::GreaterEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
 {
     GreaterEqual() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
  *  @struct TMP.LessEqual is the compile-time '<=' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct LessEqual: CompareDetails::LessEqualImpl<_Lhs, _Rhs>
+struct LessEqual
+    : CompareDetails::LessEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
 {
     LessEqual() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
  *  @struct TMP.And is the compile-time '&&' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct And: CompareDetails::AndImpl<_Lhs, _Rhs>
+struct And
+    : CompareDetails::AndImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
 {
     And() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
  *  @struct TMP.Or is the compile-time '||' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
-struct Or: CompareDetails::OrImpl<_Lhs, _Rhs>
+struct Or
+    : CompareDetails::OrImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
 {
     Or() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
  *  @struct TMP.Not is the compile-time '!' for Rationals.
  */
 template <typename _Statement>
-struct Not: CompareDetails::NotImpl<_Statement>
+struct Not: CompareDetails::NotImpl<_Statement, Eval<IsBoolean<_Statement>>>
 {
     Not() = delete;
+    __TAGS__(Tags::boolean)
 };
 
 /**
@@ -428,7 +514,7 @@ namespace IfDetails
 }
 
 /**
- *  @struct TMP.If. 
+ *  @struct TMP.If.
  *  @brief This implements if...else structure
  *  @param Boolean has a static bool member called value.
  *  When Boolean::value is true. If::type is @param _Then's,
@@ -438,6 +524,7 @@ template <typename _Boolean, typename _Then, typename _Else>
 struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>
 {
     If() = delete;
+    __TAGS__(Tags::condition)
 };
 
 /**
@@ -447,7 +534,9 @@ struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>
 template <typename _Pred, typename _Conseq>
 struct Case: Pair<_Pred, _Conseq>
 {
+    static_assert(Eval<IsBoolean<_Pred>>, "The Case Predicate MUST be of boolean type.");
     Case() = delete;
+    __TAGS__(Tags::condition)
 };
 
 /**
@@ -459,6 +548,7 @@ template <typename _Else>
 struct Else: cons<True_type, _Else>
 {
     Else() = delete;
+    __TAGS__(Tags::condition)
 };
 
 namespace CondDetails
@@ -508,10 +598,13 @@ template <typename... Pred_Conseq>
 struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type
 {
     Cond() = delete;
+    __TAGS__(Tags::condition)
 };
 
 /**
- *  @struct TMP.Negate yields the opposition of Rational.
+ *  @struct TMP.Negate yields the opposition of Rational,
+ *          which equals to Minus<Rational<0>, Rational<what>>
+ *          to some degree.
  */
 template <typename R>
 struct Negate
@@ -522,6 +615,7 @@ struct Negate
     static constexpr double    value  = -R::value;
     static std::string to_string()
     { return Rational<num, denom>::to_string(); }
+    __TAGS__(Rational<num, denom>::tag);
 };
 
 namespace AbsDetails
@@ -557,7 +651,7 @@ struct Square: Rational<R::num * R::num, R::denom * R::denom>
  *  @namespace TMP.BasicDetails hides the implementation of
  *             the four basic arithmetic operator +, -, *, /.
  */
-namespace BasicDetails
+namespace ArithmeticDetails
 {
     template <typename _Lhs, typename _Rhs>
     struct ArithmeticBases
@@ -597,45 +691,57 @@ namespace BasicDetails
 };
 
 template <typename _Lhs, typename _Rhs>
-struct Plus: BasicDetails::PlusImpl<_Lhs, _Rhs>::type
+struct Plus: ArithmeticDetails::PlusImpl<_Lhs, _Rhs>::type
 {
     Plus() = delete;
 };
 
 template <typename _Lhs, typename _Rhs>
-struct Minus: BasicDetails::MinusImpl<_Lhs, _Rhs>::type
+struct Minus: ArithmeticDetails::MinusImpl<_Lhs, _Rhs>::type
 {
     Minus() = delete;
 };
 
 template <typename _Lhs, typename _Rhs>
-struct Multiply: BasicDetails::MultiplyImpl<_Lhs, _Rhs>::type
+struct Multiply: ArithmeticDetails::MultiplyImpl<_Lhs, _Rhs>::type
 {
     Multiply() = delete;
 };
 
 template <typename _Lhs, typename _Rhs>
-struct Divide: BasicDetails::DivideImpl<_Lhs, _Rhs>::type
+struct Divide: ArithmeticDetails::DivideImpl<_Lhs, _Rhs>::type
 {
     Divide() = delete;
 };
 
 template <typename R>
-struct Increment: Plus<R, Rational<1>>
+struct Increment: Plus<R, Rational<1LL>>
 {
     Increment() = delete;
 };
 
 template <typename R>
-struct Decrement: Minus<R, Rational<1>>
+struct Decrement: Minus<R, Rational<1LL>>
 {
     Decrement() = delete;
 };
 
 template <typename _Lhs, typename _Rhs>
-struct Average: Divide<Plus<_Lhs, _Rhs>, Rational<2>>
+struct Average: Divide<Plus<_Lhs, _Rhs>, Rational<2LL>>
 {
     Average() = delete;
+};
+
+/**
+ *  @enum SqrtConstants is an enumeration class
+ *        where resides some preset constants
+ *        for @struct Sqrt & its hidden
+ *        implementation @struct SqrtImpl.
+ */
+enum class SqrtConstants: long long
+{
+    first_try = 1LL,
+    tolerance = 0xffffffLL,
 };
 
 /** 
@@ -645,9 +751,11 @@ struct Average: Divide<Plus<_Lhs, _Rhs>, Rational<2>>
  */
 namespace SqrtDetails
 {
-template <typename X, long long precision = 0xffffff>
+template <typename X, long long precision>
 struct SqrtImpl
 {
+    static_assert(Eval<GreaterEqual<X, Rational<0>>>, "Only Allows Non-negative X");
+
     template <typename Guess>
     struct improve: Average<Guess, Divide<X, Guess>>
     { };
@@ -656,15 +764,15 @@ struct SqrtImpl
     struct good_enough
     {
         static constexpr bool
-        value
-        = Less<Abs<Minus<Guess, Divide<X, Guess>>>, Rational<1, precision>>::value;
+            value
+        = Less<Abs<Minus<Guess, Divide<X, Guess>>>, Rational<1LL, precision>>::value;
     };
 
     template <typename Guess>
     struct _try: If<good_enough<Guess>, Guess, _try<improve<Guess>>>::type
     { };
 
-    using type = _try<Rational<1>>;
+    using type = _try<Rational<(long long)SqrtConstants::first_try>>;
 };
 }
 
@@ -677,10 +785,11 @@ struct SqrtImpl
  *  @param precision means the result will fall on the area
  *  O(answer, 1/@param precision)
  */
-template <typename X, long long precision = 0xffffff>
-struct Sqrt: SqrtDetails::SqrtImpl<X, precision>::type
+template <typename X, long long precision = (long long)SqrtConstants::tolerance>
+struct Sqrt: SqrtDetails::SqrtImpl<X, (long long)precision>::type
 {
     Sqrt() = delete;
+    __TAGS__(Tags::rational)
 };
 
 TMP_END

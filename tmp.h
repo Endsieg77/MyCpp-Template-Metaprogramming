@@ -10,11 +10,16 @@
 #define _TMP_H_
 
 #define __ENABLE_CONVENIENT_TMP__ using namespace TMP;
+#ifndef TMP_BEGIN
 #define TMP_BEGIN namespace TMP {
+#endif
+#ifndef TMP_END
 #define TMP_END   }
+#endif
 
 #include <string>
 #include <utility>
+#include "tmp_traits.h"
 #include "tmp_algorithms.h"
 #include "myfunctional.h"
 #include "tmp_complex.h"

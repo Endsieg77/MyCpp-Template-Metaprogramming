@@ -17,7 +17,7 @@
 
 TMP_BEGIN
 
-template <typename... _Tp>
+template <typename _Tp>
 class Function
 {
     Function() = delete;
