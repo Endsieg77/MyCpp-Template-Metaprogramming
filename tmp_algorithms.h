@@ -357,7 +357,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct PlusImpl<_Lhs, _Rhs,
-                    typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+                    std::enable_if_t<IsRational<_Lhs>::value && IsRational<_Rhs>::value>>
         : Rational<ArithBases<_Lhs, _Rhs>::_vl + ArithBases<_Lhs, _Rhs>::_vr,
                    ArithBases<_Lhs, _Rhs>::_nu>
     {
@@ -367,7 +367,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct PlusImpl<_Lhs, _Rhs,
-                    typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
+                    std::enable_if_t<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>>
     {
         using utils = ComplexBases<_Lhs, _Rhs>;
         using real  = PlusImpl<typename utils::_lr, typename utils::_rr>;
@@ -381,7 +381,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct MinusImpl<_Lhs, _Rhs,
-                     typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+                     std::enable_if_t<IsRational<_Lhs>::value && IsRational<_Rhs>::value>>
         : Rational<ArithBases<_Lhs, _Rhs>::_vl - ArithBases<_Lhs, _Rhs>::_vr,
                    ArithBases<_Lhs, _Rhs>::_nu>
     {
@@ -391,7 +391,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct MinusImpl<_Lhs, _Rhs,
-                     typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
+                     std::enable_if_t<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>>
     {
         using utils = ComplexBases<_Lhs, _Rhs>;
         using real  = MinusImpl<typename utils::_lr, typename utils::_rr>;
@@ -405,7 +405,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct MultiplyImpl<_Lhs, _Rhs,
-                        typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+                        std::enable_if_t<IsRational<_Lhs>::value && IsRational<_Rhs>::value>>
             : Rational<_Lhs::num * _Rhs::num, _Lhs::denom * _Rhs::denom>
     {
         using type  = Rational<_Lhs::num * _Rhs::num, _Lhs::denom * _Rhs::denom>;
@@ -413,7 +413,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct MultiplyImpl<_Lhs, _Rhs,
-                        typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
+                        std::enable_if_t<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>>
     {
         using utils = ComplexBases<_Lhs, _Rhs>;
         using real  = MinusImpl<MultiplyImpl<typename utils::_lr, typename utils::_rr>,
@@ -429,7 +429,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct DivideImpl<_Lhs, _Rhs,
-                      typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+                      std::enable_if_t<IsRational<_Lhs>::value && IsRational<_Rhs>::value>>
         : Rational<_Lhs::num * _Rhs::denom, _Lhs::denom * _Rhs::num>
     {
         using type  = Rational<_Lhs::num * _Rhs::denom, _Lhs::denom * _Rhs::num>;
@@ -437,7 +437,7 @@ namespace ArithmeticDetails
 
     template <typename _Lhs, typename _Rhs>
     struct DivideImpl<_Lhs, _Rhs,
-                      typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
+                      std::enable_if_t<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>>
     {
         using utils = ComplexBases<_Lhs, _Rhs>;
         using cden  = PlusImpl <Square<typename utils::_rr>,
