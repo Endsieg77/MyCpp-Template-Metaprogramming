@@ -37,11 +37,16 @@ int main()
     cout << Eval<_res> << endl;
     cout << c1::to_string() << ' ' << c2::to_string() << endl;
     cout << Eval<IsComplex<c1>> << endl;
+    cout << Eval<IsComplex<c2>> << endl;
     cout << Eval<IsRational<c1>> << endl;
     cout << Eval<IsComplex<r1>> << endl;
     cout << Eval<IsRational<r1>> << endl;
     cout << Eval<IsRational<r4>> << endl;
     cout << Eval<IsRational<i1>> << endl;
+    cout << Plus<c1, c2>::to_string() << endl;
+    cout << Minus<c1, c2>::to_string() << endl;
+    cout << Divide<c1, c2>::to_string() << endl;
+    cout << Multiply<c1, c2>::to_string() << endl;
 
     return 0;
 }

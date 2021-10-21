@@ -24,12 +24,6 @@ struct Null
     Null() = delete;
 };
 
-/**
- *  @a Eval evaluates the template _Tp's value member.
- */
-template <typename _Tp>
-constexpr auto Eval = _Tp::value;
-
 template <typename _Car, typename _Cdr = Null>
 struct Pair
 {
@@ -179,322 +173,6 @@ constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #endif
 
-/** 
- *  @struct TMP.gcd_type is the compile-time
- *          gcd algorithm implementation.
- */
-template <long long M, long long N>
-struct gcd_type: gcd_type<N, M % N>
-{
-    gcd_type() = delete;
-};
-
-template <long long N>
-struct gcd_type<N, 0>
-{ static constexpr long long value = N; };
-
-template <long long M, long long N>
-constexpr long long gcd_type_v = gcd_type<M, N>::value;
-
-/** 
- *  @struct TMP.lcm_type is the compile-time
- *          lcm algorithm implementation.
- */
-template <long long M, long long N>
-struct lcm_type
-{
-    lcm_type() = delete;
-    static constexpr long long value = N / gcd_type_v<M, N> * M;
-};
-
-template <long long M, long long N>
-constexpr long long lcm_type_v = lcm_type<M, N>::value;
-
-struct Infinity
-{
-    Infinity() = delete;
-    static constexpr long long num   = 1LL;
-    static constexpr long long denom = 0LL;
-    static constexpr tag_type  tag   = (long long)Tags::rational;
-};
-
-struct NegInfinity
-{
-    NegInfinity() = delete;
-    __TAGS__(Tags::rational)
-    static constexpr long long num   = -1LL;
-    static constexpr long long denom = 0LL;
-};
-
-/** 
- *  @struct TMP.Rational implements the Rational template.
- *          It uses gcd_type for compile-time simplification.
- *  @param _Q is the numerator, @param _P the denominator.
- */
-template <long long _Q, long long _P = 1>
-struct Rational
-{
-    static_assert(_P, "Divide Zero Exception!");
-    Rational() = delete;
-    static constexpr long long num   = _Q / gcd_type_v<_Q, _P>;
-    static constexpr long long denom = _P / gcd_type_v<_Q, _P>;
-    static constexpr double    value = static_cast<double>(_Q) / _P;
-    static std::string to_string()
-    { return std::to_string(num) + "/" + std::to_string(denom); }
-    __TAGS__((tag_type)Tags::rational, (denom == 1ULL ? (tag_type)Tags::integer : 0ULL));
-};
-
-/** 
- *  @struct TMP.Rational<_Q> defines simple method to
- *          define integers.
- */
-template <long long _Q>
-struct Rational<_Q>
-{
-    Rational() = delete;
-    __TAGS__(Tags::rational, Tags::integer);
-    static constexpr long long num   = _Q;
-    static constexpr long long denom = 1LL;
-    static constexpr long long value = _Q;
-    static std::string to_string()
-    { return std::to_string(value); }
-};
-
-template <long long _Num>
-struct Integer: Rational<_Num>
-{
-    __TAGS__(Tags::rational, Tags::integer);
-    Integer() = delete;
-};
-
-template <typename R>
-struct Numer: Integer<R::num>
-{
-    static_assert(Eval<IsRational<R>>, "Arguement MUST be Rational.");
-    Numer() = delete;
-    __TAGS__(Tags::integer);
-    static constexpr long long value = R::num;
-};
-
-template <typename R>
-struct Denom: Integer<R::denom>
-{
-    static_assert(Eval<IsRational<R>>, "Arguement MUST be Rational.");
-    Denom() = delete;
-    __TAGS__(Tags::integer);
-    static constexpr long long value = R::denom;
-};
-
-/** 
- *  @namespace TMP.CompareDetails hides the detail
- *             of compile-time comparations.
- */
-namespace CompareDetails
-{
-    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
-    struct GreaterImpl
-    {
-        static constexpr bool value = _Lhs::num * _Rhs::denom > _Rhs::num * _Lhs::denom;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct GreaterImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
-    struct LessImpl
-    {
-        static constexpr bool value = _Lhs::num * _Rhs::denom < _Rhs::num * _Lhs::denom;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct LessImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
-    struct EqualImpl
-    {
-        static constexpr bool value = _Lhs::denom * _Rhs::num == _Rhs::denom * _Lhs::num;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct EqualImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
-    struct NotEqualImpl
-    {
-        static constexpr bool value = _Lhs::denom * _Rhs::num != _Rhs::denom * _Lhs::num;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct NotEqualImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
-    struct GreaterEqualImpl
-    {
-        static constexpr bool value = GreaterImpl<_Lhs, _Rhs>::value || EqualImpl<_Lhs, _Rhs>::value;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct GreaterEqualImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Lhs, typename _Rhs, bool _isAllRational = true>
-    struct LessEqualImpl
-    {
-        static constexpr bool value = LessImpl<_Lhs, _Rhs>::value || EqualImpl<_Lhs, _Rhs>::value;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct LessEqualImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Lhs, typename _Rhs, bool _isAllBoolean = true>
-    struct AndImpl
-    {
-        static constexpr bool value = _Lhs::value && _Rhs::value;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct AndImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Lhs, typename _Rhs, bool _isAllBoolean = true>
-    struct OrImpl
-    {
-        static constexpr bool value = _Lhs::value || _Rhs::value;
-    };
-
-    template <typename _Lhs, typename _Rhs>
-    struct OrImpl<_Lhs, _Rhs, false>
-    { };
-
-    template <typename _Statement, bool _isBoolean = true>
-    struct NotImpl
-    {
-        static constexpr bool value = !_Statement::value;
-    };
-
-    template <typename _Statement>
-    struct NotImpl<_Statement, false>
-    { };
-}
-
-// Logical True and False
-struct True_type
-{
-    True_type() = delete;
-    __TAGS__(Tags::boolean)
-    static constexpr bool   value = true;
-};
-
-struct False_type
-{
-    False_type() = delete;
-    __TAGS__(Tags::boolean)
-    static constexpr bool value = true;
-};
-
-/**
- *  @struct TMP.Greater is the compile-time '>' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct Greater
-    : CompareDetails::GreaterImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
-{
-    __TAGS__(Tags::boolean)
-    Greater() = delete;
-};
-
-/**
- *  @struct TMP.Less is the compile-time '<' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct Less
-    : CompareDetails::LessImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
-{
-    Less() = delete;
-    __TAGS__(Tags::boolean)
-};
-
-/**
- *  @struct TMP.Equal is the compile-time '==' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct Equal
-    : CompareDetails::EqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
-{
-    Equal() = delete;
-    __TAGS__(Tags::boolean)
-};
-
-/**
- *  @struct TMP.NotEqual is the compile-time '!=' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct NotEqual
-    : CompareDetails::NotEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
-{
-    NotEqual() = delete;
-    __TAGS__(Tags::boolean)
-};
-
-/**
- *  @struct TMP.GreaterEqual is the compile-time '>=' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct GreaterEqual
-    : CompareDetails::GreaterEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
-{
-    GreaterEqual() = delete;
-    __TAGS__(Tags::boolean)
-};
-
-/**
- *  @struct TMP.LessEqual is the compile-time '<=' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct LessEqual
-    : CompareDetails::LessEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
-{
-    LessEqual() = delete;
-    __TAGS__(Tags::boolean)
-};
-
-/**
- *  @struct TMP.And is the compile-time '&&' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct And
-    : CompareDetails::AndImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
-{
-    And() = delete;
-    __TAGS__(Tags::boolean)
-};
-
-/**
- *  @struct TMP.Or is the compile-time '||' for Rationals.
- */
-template <typename _Lhs, typename _Rhs>
-struct Or
-    : CompareDetails::OrImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
-{
-    Or() = delete;
-    __TAGS__(Tags::boolean)
-};
-
-/**
- *  @struct TMP.Not is the compile-time '!' for Rationals.
- */
-template <typename _Statement>
-struct Not: CompareDetails::NotImpl<_Statement, Eval<IsBoolean<_Statement>>>
-{
-    Not() = delete;
-    __TAGS__(Tags::boolean)
-};
-
 /**
  *  @struct If and Cond statement for TMP.
  */
@@ -523,6 +201,7 @@ namespace IfDetails
 template <typename _Boolean, typename _Then, typename _Else>
 struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>
 {
+    static_assert(Eval<IsBoolean<_Boolean>>, "The If Predicate MUST be of boolean type.");
     If() = delete;
     __TAGS__(Tags::condition)
 };
@@ -654,7 +333,7 @@ struct Square: Rational<R::num * R::num, R::denom * R::denom>
 namespace ArithmeticDetails
 {
     template <typename _Lhs, typename _Rhs>
-    struct ArithmeticBases
+    struct ArithBases
     {
         static constexpr long long _nu = lcm_type_v<_Lhs::denom, _Rhs::denom>;
         static constexpr long long _ml = _nu / _Lhs::denom;
@@ -664,29 +343,112 @@ namespace ArithmeticDetails
     };
 
     template <typename _Lhs, typename _Rhs>
-    struct PlusImpl
+    struct ComplexBases
     {
-        using utils = ArithmeticBases<_Lhs, _Rhs>;
+        using _lr = typename _Lhs::real;
+        using _li = typename _Lhs::imag;
+        using _rr = typename _Rhs::real;
+        using _ri = typename _Rhs::imag;
+    };
+
+    template <typename _Lhs, typename _Rhs, typename = void>
+    struct PlusImpl
+    { };
+
+    template <typename _Lhs, typename _Rhs>
+    struct PlusImpl<_Lhs, _Rhs,
+                    typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+        : Rational<ArithBases<_Lhs, _Rhs>::_vl + ArithBases<_Lhs, _Rhs>::_vr,
+                   ArithBases<_Lhs, _Rhs>::_nu>
+    {
+        using utils = ArithBases<_Lhs, _Rhs>;
         using type  = Rational<utils::_vl + utils::_vr, utils::_nu>;
     };
 
     template <typename _Lhs, typename _Rhs>
-    struct MinusImpl
+    struct PlusImpl<_Lhs, _Rhs,
+                    typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
     {
-        using utils = ArithmeticBases<_Lhs, _Rhs>;
+        using utils = ComplexBases<_Lhs, _Rhs>;
+        using real  = PlusImpl<typename utils::_lr, typename utils::_rr>;
+        using imag  = PlusImpl<typename utils::_li, typename utils::_ri>;
+        using type  = Complex<real, imag>;
+    };
+
+    template <typename _Lhs, typename _Rhs, typename = void>
+    struct MinusImpl
+    { };
+
+    template <typename _Lhs, typename _Rhs>
+    struct MinusImpl<_Lhs, _Rhs,
+                     typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+        : Rational<ArithBases<_Lhs, _Rhs>::_vl - ArithBases<_Lhs, _Rhs>::_vr,
+                   ArithBases<_Lhs, _Rhs>::_nu>
+    {
+        using utils = ArithBases<_Lhs, _Rhs>;
         using type  = Rational<utils::_vl - utils::_vr, utils::_nu>;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct MinusImpl<_Lhs, _Rhs,
+                     typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
+    {
+        using utils = ComplexBases<_Lhs, _Rhs>;
+        using real  = MinusImpl<typename utils::_lr, typename utils::_rr>;
+        using imag  = MinusImpl<typename utils::_li, typename utils::_ri>;
+        using type  = Complex<real, imag>;
+    };
+
+    template <typename _Lhs, typename _Rhs, typename = void>
     struct MultiplyImpl
+    { };
+
+    template <typename _Lhs, typename _Rhs>
+    struct MultiplyImpl<_Lhs, _Rhs,
+                        typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+            : Rational<_Lhs::num * _Rhs::num, _Lhs::denom * _Rhs::denom>
     {
         using type  = Rational<_Lhs::num * _Rhs::num, _Lhs::denom * _Rhs::denom>;
     };
 
     template <typename _Lhs, typename _Rhs>
+    struct MultiplyImpl<_Lhs, _Rhs,
+                        typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
+    {
+        using utils = ComplexBases<_Lhs, _Rhs>;
+        using real  = MinusImpl<MultiplyImpl<typename utils::_lr, typename utils::_rr>,
+                                MultiplyImpl<typename utils::_li, typename utils::_ri>>;
+        using imag  = PlusImpl <MultiplyImpl<typename utils::_lr, typename utils::_ri>,
+                                MultiplyImpl<typename utils::_li, typename utils::_rr>>;
+        using type  = Complex<real, imag>;
+    };
+
+    template <typename _Lhs, typename _Rhs, typename = void>
     struct DivideImpl
+    { };
+
+    template <typename _Lhs, typename _Rhs>
+    struct DivideImpl<_Lhs, _Rhs,
+                      typename std::enable_if<IsRational<_Lhs>::value && IsRational<_Rhs>::value>::type>
+        : Rational<_Lhs::num * _Rhs::denom, _Lhs::denom * _Rhs::num>
     {
         using type  = Rational<_Lhs::num * _Rhs::denom, _Lhs::denom * _Rhs::num>;
+    };
+
+    template <typename _Lhs, typename _Rhs>
+    struct DivideImpl<_Lhs, _Rhs,
+                      typename std::enable_if<IsComplex<_Lhs>::value && IsComplex<_Rhs>::value>::type>
+    {
+        using utils = ComplexBases<_Lhs, _Rhs>;
+        using cden  = PlusImpl <Square<typename utils::_rr>,
+                                Square<typename utils::_ri>>;
+        using rnum  = PlusImpl <MultiplyImpl<typename utils::_lr, typename utils::_rr>,
+                                MultiplyImpl<typename utils::_li, typename utils::_ri>>;
+        using inum  = MinusImpl<MultiplyImpl<typename utils::_li, typename utils::_rr>,
+                                MultiplyImpl<typename utils::_lr, typename utils::_ri>>;
+        using real  = typename DivideImpl<rnum, cden>::type;
+        using imag  = typename DivideImpl<inum, cden>::type;
+        using type  = Complex<real, imag>;
     };
 };
 
@@ -755,13 +517,14 @@ template <typename X, long long precision>
 struct SqrtImpl
 {
     static_assert(Eval<GreaterEqual<X, Rational<0>>>, "Only Allows Non-negative X");
+    __TAGS__(Tags::rational)
 
     template <typename Guess>
     struct improve: Average<Guess, Divide<X, Guess>>
-    { };
+    { __TAGS__(Tags::rational) };
 
     template <typename Guess>
-    struct good_enough
+    struct good_enough: LogicalPrototype
     {
         static constexpr bool
             value
@@ -770,7 +533,7 @@ struct SqrtImpl
 
     template <typename Guess>
     struct _try: If<good_enough<Guess>, Guess, _try<improve<Guess>>>::type
-    { };
+    { __TAGS__(Tags::rational) };
 
     using type = _try<Rational<(long long)SqrtConstants::first_try>>;
 };
@@ -789,7 +552,6 @@ template <typename X, long long precision = (long long)SqrtConstants::tolerance>
 struct Sqrt: SqrtDetails::SqrtImpl<X, (long long)precision>::type
 {
     Sqrt() = delete;
-    __TAGS__(Tags::rational)
 };
 
 TMP_END

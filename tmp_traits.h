@@ -19,8 +19,14 @@
 
 TMP_BEGIN
 
+/**
+ *  Universal tag type.
+ */
 using tag_type = unsigned long long;
 
+/**
+ *  @enum All tags are defined in this enumeration.
+ */
 enum class Tags: tag_type
 {
     rational  = 1ULL,
@@ -29,6 +35,7 @@ enum class Tags: tag_type
     condition = 1ULL << 3ULL,
     loop      = 1ULL << 4ULL,
     complex   = 1ULL << 5ULL,
+    container = 1ULL << 6ULL,
 };
 
 template<typename... Tag>
@@ -76,6 +83,12 @@ template <typename _Tp>
 struct IsComplex
 {
     __HAS_TAG__(Tags::complex)
+};
+
+template <typename _Tp>
+struct Container
+{
+    __HAS_TAG__(Tags::container)
 };
 
 TMP_END
