@@ -109,6 +109,7 @@ using c3 = Complex<Rational<19, 7>, Rational<-3, 11>>;
 They have their own `Plus`, `Minus`, `Multiply`, `Divide` implementation.
 
 ## Data Structure `Map`
+
 We define `Map` like this:
 
 ```cpp
@@ -128,3 +129,14 @@ e.g.
 ```cpp
 ReadMap<map>(std::cout);
 ```
+
+## `metaprint` is now supported
+
+We can now print Object's information like this,
+```cpp
+metaprint<r2>(cout) << endl;
+metaprint<i1>(cout) << endl;
+metaprint<c3>(cout) << endl;
+metaprint<cons<r1, c3>>(cout) << endl;
+```
+which I call `metaprint`. This name really cooool, right?

@@ -54,32 +54,41 @@ struct ReadHelper<Map<_First, _Mapto...>>
 {
     using map  = Map<_First, _Mapto...>;
     using type = map::type;
-    static void print(std::ostream &os)
+    static std::ostream &print(std::ostream &os)
     {
-        os << " Key: "    << std::setw(20)  << Eval<car<type>>
-           << " Value: "  << std::setw(20) << Eval<cdr<type>> << std::endl;
+        os
+          << " Key: "    << std::setw(20);
+        metaprint<car<type>>(os);
+        os
+          << " Value: "  << std::setw(20);
+        metaprint<cdr<type>>(os);
+        os << std::endl;
         ReadHelper<Map<_Mapto...>>::print(os);
+        return os;
     }
 };
 
 template <>
 struct ReadHelper<Map<>>
 {
-    static void print(std::ostream &os)
+    static std::ostream &print(std::ostream &os)
     {
         os << "======================  MAP END  ======================" << std::endl;
+        return os;
     }
 };
 }
 
 template <typename _Map,
           typename = typename std::enable_if<Eval<IsMap<_Map>>>>
-void ReadMap(std::ostream &os)
+std::ostream &ReadMap(std::ostream &os)
 {
+    
     os << "====================== MAP BEGIN ======================" << std::endl;
     ReadMapDetails
       ::ReadHelper<_Map>
         ::print(os);
+    return os;
 }
 
 TMP_END
