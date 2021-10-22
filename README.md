@@ -29,7 +29,7 @@ using r4 = Rational<1>;
 
 ## `Traits`
 
-We add to tags to template by macro `__TAGS__(...)`
+We add to tags to template by macro `__TAGS__(...)`.
 `__TAGS__(Tags::rational, Tags::integer)` will endow
 the template with traits `IsRational` & `IsInteger`.
 Careful that `__TAGS__(...)` will overwrite each other,
