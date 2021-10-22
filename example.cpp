@@ -28,12 +28,12 @@ int main()
     cout << Eval<_if> << endl;
     
     using _res =
-    Cond<
-        Case<And<Less<r2, r1>, Less<r4, r1>>, r1>,
-        Case<Or<Less<r3, r2>, LessEqual<r4, r0>>, r2>,
-        Case<Greater<r0, r4>, r4>,
-        Else<r3>,
-        Else<r4>>;
+      Cond<
+          Case<And<Less<r2, r1>, Less<r4, r1>>, r1>,
+          Case<Or<Less<r3, r2>, LessEqual<r4, r0>>, r2>,
+          Case<Greater<r0, r4>, r4>,
+          Else<r3>,
+          Else<r4>>;
         
     cout << Eval<_res> << endl;
     cout << c1::to_string() << ' ' << c2::to_string() << endl;
@@ -43,12 +43,17 @@ int main()
     cout << Multiply<c1, c2>::to_string() << endl;
 
     using map =
-    Map<
-        cons<c2, r1>,
-        cons<c1, r3>,
-        cons<c3, r2>,
-        cons<Plus<c1, c3>, r4>>;
+      Map<
+          cons<c2, r1>,
+          cons<c1, r3>,
+          cons<c3, r2>,
+          cons<Plus<c1, c3>, r4>>;
     ReadMap<map>(cout);
+
+    metaprint<r2>(cout) << endl;
+    metaprint<i1>(cout) << endl;
+    metaprint<c3>(cout) << endl;
+    metaprint<cons<r1, c3>>(cout) << endl;
 
     return 0;
 }
