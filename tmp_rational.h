@@ -17,6 +17,9 @@
 
 TMP_BEGIN
 
+struct RationalPrototype: Prototype
+{ };
+
 /** 
  *  @struct TMP.gcd_type is the compile-time
  *          gcd algorithm implementation.
@@ -48,7 +51,7 @@ struct lcm_type
 template <long long M, long long N>
 constexpr long long lcm_type_v = lcm_type<M, N>::value;
 
-struct Infinity
+struct Infinity: RationalPrototype
 {
     Infinity() = delete;
     __TAGS__(Tags::rational)
@@ -56,7 +59,7 @@ struct Infinity
     static constexpr long long denom = 0LL;
 };
 
-struct NegInfinity
+struct NegInfinity: RationalPrototype
 {
     NegInfinity() = delete;
     __TAGS__(Tags::rational)
@@ -70,7 +73,7 @@ struct NegInfinity
  *  @param _Q is the numerator, @param _P the denominator.
  */
 template <long long _Q, long long _P = 1>
-struct Rational
+struct Rational: RationalPrototype
 {
     static_assert(_P, "Divide Zero Exception!");
     Rational() = delete;
@@ -100,7 +103,7 @@ struct Rational
  *          define integers.
  */
 template <long long _Q>
-struct Rational<_Q>
+struct Rational<_Q>: RationalPrototype
 {
     Rational() = delete;
     static constexpr long long num   = _Q;

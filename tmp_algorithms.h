@@ -19,13 +19,19 @@ TMP_BEGIN
 /**
  *  @struct TMP.Null functions behind the curtain.
  */
-struct Null
+struct Null: Prototype
 {
     Null() = delete;
+    __TAGS__(Tags::null)
+};
+
+struct PairPrototype: Prototype
+{
+    __TAGS__(Tags::pair)
 };
 
 template <typename _Car, typename _Cdr = Null>
-struct Pair
+struct Pair: PairPrototype
 {
     Pair() = delete;
     using type = Pair;
@@ -52,6 +58,7 @@ struct cons: Pair<_Car, _Cdr>
 template <typename Cons>
 struct car: Cons::car
 {
+    static_assert(Eval<IsPair<Cons>>);
     car() = delete;
 };
 
@@ -62,6 +69,7 @@ struct car: Cons::car
 template <typename Cons>
 struct cdr: Cons::cdr
 {
+    static_assert(Eval<IsPair<Cons>>);
     cdr() = delete;
 };
 
@@ -173,6 +181,11 @@ constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #endif
 
+struct ConditionPrototype: Prototype
+{
+    __TAGS__(Tags::condition)
+};
+
 /**
  *  @struct If and Cond statement for TMP.
  */
@@ -199,11 +212,10 @@ namespace IfDetails
  *  else @param _Else's.
  */
 template <typename _Boolean, typename _Then, typename _Else>
-struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>
+struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>, ConditionPrototype
 {
     static_assert(Eval<IsBoolean<_Boolean>>, "The If Predicate MUST be of boolean type.");
     If() = delete;
-    __TAGS__(Tags::condition)
 };
 
 /**
@@ -211,11 +223,10 @@ struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>
  *  @brief Cond structure's branches.
  */
 template <typename _Pred, typename _Conseq>
-struct Case: Pair<_Pred, _Conseq>
+struct Case: Pair<_Pred, _Conseq>, ConditionPrototype
 {
     static_assert(Eval<IsBoolean<_Pred>>, "The Case Predicate MUST be of boolean type.");
     Case() = delete;
-    __TAGS__(Tags::condition)
 };
 
 /**
@@ -224,10 +235,9 @@ struct Case: Pair<_Pred, _Conseq>
  *         Iin which it also causes logical short-circuit.
  */
 template <typename _Else>
-struct Else: cons<True_type, _Else>
+struct Else: cons<True_type, _Else>, ConditionPrototype
 {
     Else() = delete;
-    __TAGS__(Tags::condition)
 };
 
 namespace CondDetails
@@ -274,10 +284,9 @@ struct CondImpl<_LstButNotLeast>
 }
 
 template <typename... Pred_Conseq>
-struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type
+struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type, ConditionPrototype
 {
     Cond() = delete;
-    __TAGS__(Tags::condition)
 };
 
 /**

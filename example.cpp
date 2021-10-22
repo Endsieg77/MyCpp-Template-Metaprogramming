@@ -1,7 +1,7 @@
 #pragma GCC optimize(2)
-#include <bits/stdc++.h>
-#include <string_view>
 #include "tmp.h"
+#include <iostream>
+#include <string_view>
 
 using namespace std;
 using namespace TMP;
@@ -18,6 +18,7 @@ int main()
     using r4 = Rational<1>;
     using c1 = Complex<Rational<3, 4>, Rational<1>>;
     using c2 = Complex<Rational<3, 4>, Rational<-1>>;
+    using c3 = Complex<Rational<19, 7>, Rational<-3, 11>>;
     using i1 = Integer<3>;
 
     cout << Eval<Sqrt<Rational<2>>> << endl;
@@ -36,17 +37,18 @@ int main()
         
     cout << Eval<_res> << endl;
     cout << c1::to_string() << ' ' << c2::to_string() << endl;
-    cout << Eval<IsComplex<c1>> << endl;
-    cout << Eval<IsComplex<c2>> << endl;
-    cout << Eval<IsRational<c1>> << endl;
-    cout << Eval<IsComplex<r1>> << endl;
-    cout << Eval<IsRational<r1>> << endl;
-    cout << Eval<IsRational<r4>> << endl;
-    cout << Eval<IsRational<i1>> << endl;
     cout << Plus<c1, c2>::to_string() << endl;
     cout << Minus<c1, c2>::to_string() << endl;
     cout << Divide<c1, c2>::to_string() << endl;
     cout << Multiply<c1, c2>::to_string() << endl;
+
+    using map =
+    Map<
+        cons<c2, r1>,
+        cons<c1, r3>,
+        cons<c3, r2>,
+        cons<Plus<c1, c3>, r4>>;
+    ReadMap<map>(cout);
 
     return 0;
 }

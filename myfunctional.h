@@ -38,7 +38,7 @@ public:
 #endif
       &&fp)
         : _fp(std::move(fp)) { };
-    type &operator=(value_type fp) { _fp = fp; };
+    type &operator=(value_type &&fp) { _fp = fp; };
     constexpr _Ret operator()(_Params&&... param) const
     { return _fp(std::forward<_Params>(param)...); };
 private:

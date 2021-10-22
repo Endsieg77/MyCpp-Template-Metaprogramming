@@ -16,8 +16,21 @@
 #ifndef TMP_END
 #define TMP_END   }
 #endif
+#if __cplusplus >= 201703L
+#define __CXX17_IF_CONSTEXPR__ constexpr
+#else
+#define __CXX17_IF_CONSTEXPR__
+#endif
+
+#if __cplusplus >= 201103L
+#define __CXX11_CONSTEXPR__ constexpr
+#else
+#define __CXX11_CONSTEXPR__
+#endif
 
 TMP_BEGIN
+
+struct Prototype { };
 
 /**
  *  @a Eval evaluates the template _Tp's value member.
@@ -27,6 +40,8 @@ constexpr auto Eval = _Tp::value;
 
 TMP_END
 
+#include <iosfwd>
+#include <iomanip>
 #include <string>
 #include <utility>
 #include "tmp_traits.h"
@@ -35,5 +50,7 @@ TMP_END
 #include "tmp_complex.h"
 #include "tmp_algorithms.h"
 #include "myfunctional.h"
+#include "mybind.h"
+#include "tmp_map.h"
 
 #endif

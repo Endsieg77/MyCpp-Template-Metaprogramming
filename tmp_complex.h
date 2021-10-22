@@ -15,6 +15,8 @@
 #define TMP_END   }
 #endif
 
+#include <complex>
+
 TMP_BEGIN
 
 namespace toStringDetails
@@ -26,37 +28,22 @@ namespace toStringDetails
         using imag = typename Complex::imag;
         std::string real_part = "", imag_part = "";
 
-        if
-        #if __cplusplus >= 201703L
-          constexpr
-        #endif
+        if __CXX17_IF_CONSTEXPR__
         (Eval<NotEqual<real, Rational<0LL>>>)
             real_part = real::to_string();
-        if
-        #if __cplusplus >= 201703L
-          constexpr
-        #endif
+        if __CXX17_IF_CONSTEXPR__
         (Eval<Greater<imag, Rational<0LL>>>)
         {
-            if
-            #if __cplusplus >= 201703L
-              constexpr
-            #endif
+            if __CXX17_IF_CONSTEXPR__
             (Eval<NotEqual<imag, Rational<1LL>>>)
                 imag_part = '+' + imag::to_string() + 'i';
             else
                 imag_part = "+i";
         }
-        else if
-        #if __cplusplus >= 201703L
-          constexpr
-        #endif
+        else if __CXX17_IF_CONSTEXPR__
         (Eval<Less<imag, Rational<0LL>>>)
         {
-            if
-            #if __cplusplus >= 201703L
-                constexpr
-            #endif
+            if __CXX17_IF_CONSTEXPR__
             (Eval<NotEqual<imag, Rational<-1LL>>>)
                 imag_part = imag::to_string() + 'i';
             else
@@ -73,9 +60,10 @@ struct Complex
     Complex() = delete;
     using real = _Re;
     using imag = _Im;
-    static constexpr tag_type tag = (tag_type)Tags::complex;
+    __TAGS__(Tags::complex);
     static std::string to_string()
     { return toStringDetails::toStringImpl<Complex>(); }
+    static constexpr std::complex value = std::complex((double)real::value, (double)imag::value);
 };
 
 template <typename C>

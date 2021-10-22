@@ -29,6 +29,7 @@ using tag_type = unsigned long long;
  */
 enum class Tags: tag_type
 {
+    null      = 0ULL,
     rational  = 1ULL,
     integer   = 1ULL << 1ULL,
     boolean   = 1ULL << 2ULL,
@@ -36,6 +37,8 @@ enum class Tags: tag_type
     loop      = 1ULL << 4ULL,
     complex   = 1ULL << 5ULL,
     container = 1ULL << 6ULL,
+    pair      = 1ULL << 7ULL,
+    map       = 1ULL << 8ULL,
 };
 
 template<typename... Tag>
@@ -43,6 +46,13 @@ inline constexpr tag_type tag_helper(Tag&&... tags)
 {
     return ((tag_type)tags | ...);
 }
+
+template <typename _Tp>
+struct IsNull
+{
+    IsNull() = delete;
+    static constexpr bool value = _Tp::tag == 0;
+};
 
 template <typename _Tp>
 struct IsRational
@@ -86,9 +96,21 @@ struct IsComplex
 };
 
 template <typename _Tp>
-struct Container
+struct IsContainer
 {
     __HAS_TAG__(Tags::container)
+};
+
+template <typename _Tp>
+struct IsPair
+{
+    __HAS_TAG__(Tags::pair)
+};
+
+template <typename _Tp>
+struct IsMap
+{
+    __HAS_TAG__(Tags::map)
 };
 
 TMP_END

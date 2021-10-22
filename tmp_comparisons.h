@@ -115,7 +115,7 @@ namespace CompareDetails
 }
 
 // Logical True and False
-struct LogicalPrototype
+struct LogicalPrototype: Prototype
 {
     __TAGS__(Tags::boolean)
 };
@@ -137,9 +137,9 @@ struct False_type: LogicalPrototype
  */
 template <typename _Lhs, typename _Rhs>
 struct Greater
-    : CompareDetails
-        ::GreaterImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>,
-      LogicalPrototype
+    : LogicalPrototype,
+      CompareDetails
+        ::GreaterImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
 {
     Greater() = delete;
 };
@@ -149,9 +149,10 @@ struct Greater
  */
 template <typename _Lhs, typename _Rhs>
 struct Less
-    : CompareDetails
-        ::LessImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>,
-      LogicalPrototype
+    :  LogicalPrototype,
+       CompareDetails
+        ::LessImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
+     
 {
     Less() = delete;
 };
@@ -161,9 +162,10 @@ struct Less
  */
 template <typename _Lhs, typename _Rhs>
 struct Equal
-    : CompareDetails
-        ::EqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>,
-      LogicalPrototype
+    : LogicalPrototype,
+      CompareDetails
+        ::EqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
+     
 {
     Equal() = delete;
 };
@@ -173,9 +175,10 @@ struct Equal
  */
 template <typename _Lhs, typename _Rhs>
 struct NotEqual
-    : CompareDetails
-        ::NotEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>,
-      LogicalPrototype
+    : LogicalPrototype,
+      CompareDetails
+        ::NotEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
+     
 {
     NotEqual() = delete;
 };
@@ -185,9 +188,10 @@ struct NotEqual
  */
 template <typename _Lhs, typename _Rhs>
 struct GreaterEqual
-    : CompareDetails
-        ::GreaterEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>,
-      LogicalPrototype
+    : LogicalPrototype,
+      CompareDetails
+        ::GreaterEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
+      
 {
     GreaterEqual() = delete;
 };
@@ -197,9 +201,10 @@ struct GreaterEqual
  */
 template <typename _Lhs, typename _Rhs>
 struct LessEqual
-    : CompareDetails
-        ::LessEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>,
-      LogicalPrototype
+    : LogicalPrototype, 
+      CompareDetails
+        ::LessEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
+      
 {
     LessEqual() = delete;
 };
@@ -209,9 +214,10 @@ struct LessEqual
  */
 template <typename _Lhs, typename _Rhs>
 struct And
-    : CompareDetails
-        ::AndImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>,
-      LogicalPrototype
+    : LogicalPrototype,
+      CompareDetails
+        ::AndImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
+      
 {
     And() = delete;
 };
@@ -221,9 +227,10 @@ struct And
  */
 template <typename _Lhs, typename _Rhs>
 struct Or
-    : CompareDetails
-        ::OrImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>,
-      LogicalPrototype
+    : LogicalPrototype,
+      CompareDetails
+        ::OrImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
+      
 {
     Or() = delete;
 };
@@ -233,9 +240,10 @@ struct Or
  */
 template <typename _Statement>
 struct Not
-    : CompareDetails
-        ::NotImpl<_Statement, Eval<IsBoolean<_Statement>>>,
-      LogicalPrototype
+    : LogicalPrototype,
+      CompareDetails
+        ::NotImpl<_Statement, Eval<IsBoolean<_Statement>>>
+      
 {
     Not() = delete;
 };
