@@ -1,28 +1,40 @@
 # MyCpp-Template-Metaprogramming
-
 My Library for simple CTMP
-
-Before we start, make sure your `C++` standard is over ISO-C++17.
 
 ## Start
 
 ```cpp
 #include "tmp.h"
 ```
-
 to get started.
+
+And
+```cpp
+using namespace TMP;
+```
+
+to make TMP more convenient for you.
 
 ## Use typedef as variable definitions
 
 Like this:
 
 ```cpp
-using r0 = TMP::Rational<0>;
-using r1 = TMP::Rational<4, 6>; // it would be reduced at compile time
-using r2 = TMP::Rational<11, 4>;
-using r3 = TMP::Rational<15, 2>;
-using r4 = TMP::Rational<1>;
+using r0 = Rational<0>;
+using r1 = Rational<4, 6>; // it would be reduced at compile time
+using r2 = Rational<11, 4>;
+using r3 = Rational<15, 2>;
+using r4 = Rational<1>;
 ```
+
+## `Traits`
+
+We add to tags to template by macro `__TAGS__(...)`
+`__TAGS__(Tags::rational, Tags::integer)` will endow
+the template with traits `IsRational` & `IsInteger`.
+Careful that `__TAGS__(...)` will overwrite each other,
+and the final result depends on the last `__TAGS__(...)`
+in the inheritance hierarchy.
 
 ## `RangeSum`
 
@@ -86,3 +98,33 @@ Cond<
 cout << _res::value << endl;
 ```
 
+## Complex Numbers
+
+```cpp
+using c1 = Complex<Rational<3, 4>, Rational<1>>;
+using c2 = Complex<Rational<3, 4>, Rational<-1>>;
+using c3 = Complex<Rational<19, 7>, Rational<-3, 11>>;
+```
+
+They have their own `Plus`, `Minus`, `Multiply`, `Divide` implementation.
+
+## Data Structure `Map`
+We define `Map` like this:
+
+```cpp
+    using map =
+    Map<
+        cons<c2, r1>,
+        cons<c1, r3>,
+        cons<c3, r2>,
+        cons<Plus<c1, c3>, r4>>;
+```
+
+And we can get to know the data stored in one map by
+`ReadMap<[Map Name]>([Output Device(std::ostream &)])`
+
+e.g.
+
+```cpp
+ReadMap<map>(std::cout);
+```
