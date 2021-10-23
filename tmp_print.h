@@ -33,12 +33,11 @@ namespace printNamespace
         static std::ostream &print(std::ostream &os)
         {
             os
-              << "cons"
-                 "( ";
+              << "(cons ";
             printHelper<car<_Tp>>::print(os) 
-              << ", ";
+              << " ";
             printHelper<cdr<_Tp>>::print(os)
-              << " )";
+              << ")";
             return os;
         }
     };
@@ -50,6 +49,17 @@ namespace printNamespace
         static std::ostream &print(std::ostream &os)
         {
             os << _Tp::to_string();
+            return os;
+        }
+    };
+
+    template <typename _Tp>
+    struct printHelper<_Tp,
+                       typename std::enable_if<Eval<IsSymbol<_Tp>>>::type>
+    {
+        static std::ostream &print(std::ostream &os)
+        {
+            os << _Tp::value;
             return os;
         }
     };

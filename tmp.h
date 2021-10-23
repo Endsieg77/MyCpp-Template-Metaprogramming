@@ -11,11 +11,12 @@
 
 #define __ENABLE_CONVENIENT_TMP__ using namespace TMP;
 #ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
+#define TMP_BEGIN namespace siebenzevan {
 #endif
 #ifndef TMP_END
 #define TMP_END   }
 #endif
+
 #if __cplusplus >= 201703L
 #define __CXX17_IF_CONSTEXPR__ constexpr
 #else
@@ -45,12 +46,14 @@ TMP_END
 #include <string>
 #include <utility>
 #include "tmp_traits.h"
+#include "tmp_symbol.h"
 #include "tmp_comparisons.h"
 #include "tmp_rational.h"
 #include "tmp_complex.h"
 #include "tmp_algorithms.h"
 #include "myfunctional.h"
 #include "mybind.h"
+#include "tmp_print.h"
 #include "tmp_map.h"
 
 #endif

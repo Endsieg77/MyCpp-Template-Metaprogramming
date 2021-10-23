@@ -10,7 +10,7 @@ to get started.
 
 And
 ```cpp
-using namespace TMP;
+using namespace siebenzevan;
 ```
 
 to make TMP more convenient for you.
@@ -20,11 +20,12 @@ to make TMP more convenient for you.
 Like this:
 
 ```cpp
-using r0 = Rational<0>;
-using r1 = Rational<4, 6>; // it would be reduced at compile time
-using r2 = Rational<11, 4>;
-using r3 = Rational<15, 2>;
-using r4 = Rational<1>;
+using r0   = Rational<0>;
+using r1   = Rational<4, 6>; // it would be reduced at compile time
+using r2   = Rational<11, 4>;
+using r3   = Rational<15, 2>;
+using r4   = Rational<1>;
+using symb = symbol("Hello, world"); // symb is a symbol.
 ```
 
 ## `Traits`
@@ -87,7 +88,7 @@ Ideally, `Cond` statement should receive several `Case`s and at most one `Else` 
 Here are some examples:
 
 ```cpp
-using _if = TMP::If<Greater<r1, r2>, r1, r2>;
+using _if = If<Greater<r1, r2>, r1, r2>;
 cout << _if::value << endl;
 using _res =
 Cond<
@@ -138,5 +139,9 @@ metaprint<r2>(cout) << endl;
 metaprint<i1>(cout) << endl;
 metaprint<c3>(cout) << endl;
 metaprint<cons<r1, c3>>(cout) << endl;
+metaprint<symb>(cout) << endl;
 ```
 which I call `metaprint`. This name really cooool, right?
+
+Nesting `cons` will now result in problems.
+Why? I may never know looool.

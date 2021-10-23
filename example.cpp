@@ -4,7 +4,7 @@
 #include <string_view>
 
 using namespace std;
-using namespace TMP;
+using namespace siebenzevan;
 
 int main()
 {
@@ -47,13 +47,15 @@ int main()
           cons<c2, r1>,
           cons<c1, r3>,
           cons<c3, r2>,
-          cons<Plus<c1, c3>, r4>>;
+          cons<Plus<c1, c3>, r4>,
+          cons<symbol("Hello, world."), c3>>;
     ReadMap<map>(cout);
 
     metaprint<r2>(cout) << endl;
     metaprint<i1>(cout) << endl;
     metaprint<c3>(cout) << endl;
     metaprint<cons<r1, c3>>(cout) << endl;
+    metaprint<symbol("wssb")>(cout) << endl;
 
     return 0;
 }

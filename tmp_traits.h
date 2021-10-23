@@ -39,6 +39,7 @@ enum class Tags: tag_type
     container = 1ULL << 6ULL,
     pair      = 1ULL << 7ULL,
     map       = 1ULL << 8ULL,
+    symbol    = 1ULL << 9ULL,
 };
 
 template<typename... Tag>
@@ -111,6 +112,12 @@ template <typename _Tp>
 struct IsMap
 {
     __HAS_TAG__(Tags::map)
+};
+
+template <typename _Tp>
+struct IsSymbol
+{
+    __HAS_TAG__(Tags::symbol)
 };
 
 TMP_END
