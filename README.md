@@ -39,7 +39,7 @@ in the inheritance hierarchy.
 
 ## `RangeSum`
 
-Given an unary lambda function *f* , `RangeSum_v<from, to, step, f> `applies *f* to all *x* in `range(from, to, step)` and calculates the sum of *f*(*x*).
+For given unary lambda function *f* , `RangeSum_v<from, to, step, f> `applies *f* to all *x* in `range(from, to, step)` and calculates the sum of *f*(*x*).
 
 *f* has a preset value similar to the Id(*x*). If we would like to customize our *f*, we must assign a value for *step*.
 
