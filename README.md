@@ -154,6 +154,7 @@ Using `Prototype` technique, this new feature is enabled now.
 cout << Eval<map::is::map> << endl;
 cout << Eval<r1::is::map> << endl;
 cout << Eval<r1::is::rational> << endl;
+cout << Eval<r1::is::_not::rational> << endl;
 ```
 
 Really COOOOOOOOL!

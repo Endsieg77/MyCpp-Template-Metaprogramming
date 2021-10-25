@@ -56,10 +56,24 @@ struct IsNull
 };
 
 template <typename _Tp>
+struct IsNotNull
+{
+    IsNotNull() = delete;
+    static constexpr bool value = !IsNull<_Tp>::value;
+};
+
+template <typename _Tp>
 struct IsRational
 {
     IsRational() = delete;
     __HAS_TAG__(Tags::rational)
+};
+
+template <typename _Tp>
+struct IsNotRational
+{
+    IsNotRational() = delete;
+    static constexpr bool value = !IsRational<_Tp>::value;
 };
 
 template <typename _Tp>
@@ -70,10 +84,24 @@ struct IsInteger
 };
 
 template <typename _Tp>
+struct IsNotInteger
+{
+    IsNotInteger() = delete;
+    static constexpr bool value = !IsInteger<_Tp>::value;
+};
+
+template <typename _Tp>
 struct IsBoolean
 {
     IsBoolean() = delete;
     __HAS_TAG__(Tags::boolean)
+};
+
+template <typename _Tp>
+struct IsNotBoolean
+{
+    IsNotBoolean() = delete;
+    static constexpr bool value = !IsBoolean<_Tp>::value;
 };
 
 template <typename _Tp>
@@ -84,10 +112,24 @@ struct IsCondition
 };
 
 template <typename _Tp>
+struct IsNotCondition
+{
+    IsNotCondition() = delete;
+    static constexpr bool value = !IsCondition<_Tp>::value;
+};
+
+template <typename _Tp>
 struct IsLoop
 {
     IsBoolean() = delete;
     __HAS_TAG__(Tags::loop)
+};
+
+template <typename _Tp>
+struct IsNotLoop
+{
+    IsNotLoop() = delete;
+    static constexpr bool value = !IsLoop<_Tp>::value;
 };
 
 template <typename _Tp>
@@ -97,9 +139,23 @@ struct IsComplex
 };
 
 template <typename _Tp>
+struct IsNotComplex
+{
+    IsNotComplex() = delete;
+    static constexpr bool value = !IsComplex<_Tp>::value;
+};
+
+template <typename _Tp>
 struct IsContainer
 {
     __HAS_TAG__(Tags::container)
+};
+
+template <typename _Tp>
+struct IsNotContainer
+{
+    IsNotContainer() = delete;
+    static constexpr bool value = !IsContainer<_Tp>::value;
 };
 
 template <typename _Tp>
@@ -109,9 +165,23 @@ struct IsPair
 };
 
 template <typename _Tp>
+struct IsNotPair
+{
+    IsNotPair() = delete;
+    static constexpr bool value = !IsPair<_Tp>::value;
+};
+
+template <typename _Tp>
 struct IsMap
 {
     __HAS_TAG__(Tags::map)
+};
+
+template <typename _Tp>
+struct IsNotMap
+{
+    IsNotMap() = delete;
+    static constexpr bool value = !IsMap<_Tp>::value;
 };
 
 template <typename _Tp>
@@ -120,10 +190,38 @@ struct IsSymbol
     __HAS_TAG__(Tags::symbol)
 };
 
+template <typename _Tp>
+struct IsNotSymbol
+{
+    IsNotSymbol() = delete;
+    static constexpr bool value = !IsSymbol<_Tp>::value;
+};
+
+namespace IsNotDetails
+{
+    template <typename _Tp>
+    struct IsNotImpl
+    {
+        struct _not
+        {        
+            using null      = IsNotNull<_Tp>;
+            using rational  = IsNotRational<_Tp>;
+            using integer   = IsNotInteger<_Tp>;
+            using boolean   = IsNotBoolean<_Tp>;
+            using condition = IsNotCondition<_Tp>;
+            using loop      = IsNotLoop<_Tp>;
+            using complex   = IsNotComplex<_Tp>;
+            using container = IsNotContainer<_Tp>;
+            using map       = IsNotMap<_Tp>;
+            using symbol    = IsNotSymbol<_Tp>;
+        };
+    };
+}
+
 template <typename _Tp = void>
 struct Prototype
 {
-    struct is
+    struct is: IsNotDetails::IsNotImpl<_Tp>
     {
         using null      = IsNull<_Tp>;
         using rational  = IsRational<_Tp>;
@@ -137,6 +235,7 @@ struct Prototype
         using symbol    = IsSymbol<_Tp>;
     };
 };
+
 
 TMP_END
 
