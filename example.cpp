@@ -20,6 +20,7 @@ int main()
     using c2 = Complex<Rational<3, 4>, Rational<-1>>;
     using c3 = Complex<Rational<19, 7>, Rational<-3, 11>>;
     using i1 = Integer<3>;
+    using symb = symbol("You really born singer.");
 
     cout << Eval<Sqrt<Rational<2>>> << endl;
     cout << Eval<Sqrt<Rational<414, 567>>> << endl;
@@ -51,11 +52,14 @@ int main()
           cons<symbol("Hello, world."), c3>>;
     ReadMap<map>(cout);
 
-    metaprint<r2>(cout) << endl;
-    metaprint<i1>(cout) << endl;
-    metaprint<c3>(cout) << endl;
-    metaprint<cons<r1, c3>>(cout) << endl;
-    metaprint<symbol("wssb")>(cout) << endl;
+    // metaprint<r2>(cout) << endl;
+    // metaprint<i1>(cout) << endl;
+    // metaprint<c3>(cout) << endl;
+    // metaprint<cons<r1, c3>>(cout) << endl;
+    // metaprint<symbol("wssb")>(cout) << endl;
+    cout << Eval<map::is::map> << endl;
+    cout << Eval<r1::is::map> << endl;
+    cout << Eval<r1::is::rational> << endl;
 
     return 0;
 }

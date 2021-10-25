@@ -115,7 +115,7 @@ namespace CompareDetails
 }
 
 // Logical True and False
-struct LogicalPrototype: Prototype
+struct LogicalPrototype: Prototype<LogicalPrototype>
 {
     __TAGS__(Tags::boolean)
 };

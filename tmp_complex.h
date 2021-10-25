@@ -55,7 +55,7 @@ namespace toStringDetails
 }
 
 template <typename _Re = Rational<0LL>, typename _Im = Rational<0LL>>
-struct Complex
+struct Complex: Prototype<Complex<_Re, _Im>>
 {
     Complex() = delete;
     using real = _Re;

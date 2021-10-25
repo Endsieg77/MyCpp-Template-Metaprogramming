@@ -19,13 +19,13 @@ TMP_BEGIN
 /**
  *  @struct TMP.Null functions behind the curtain.
  */
-struct Null: Prototype
+struct Null: Prototype<Null>
 {
     Null() = delete;
     __TAGS__(Tags::null)
 };
 
-struct PairPrototype: Prototype
+struct PairPrototype: Prototype<PairPrototype>
 {
     __TAGS__(Tags::pair)
 };
@@ -181,7 +181,7 @@ constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #endif
 
-struct ConditionPrototype: Prototype
+struct ConditionPrototype: Prototype<ConditionPrototype>
 {
     __TAGS__(Tags::condition)
 };

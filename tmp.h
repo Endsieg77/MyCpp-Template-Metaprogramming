@@ -31,8 +31,6 @@
 
 TMP_BEGIN
 
-struct Prototype { };
-
 /**
  *  @a Eval evaluates the template _Tp's value member.
  */

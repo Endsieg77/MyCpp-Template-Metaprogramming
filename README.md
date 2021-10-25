@@ -15,7 +15,7 @@ using namespace siebenzevan;
 
 to make TMP more convenient for you.
 
-## Use typedef as variable definitions
+## Use `typedef`s as variable definitions
 
 Like this:
 
@@ -39,7 +39,7 @@ in the inheritance hierarchy.
 
 ## `RangeSum`
 
-For given unary lambda function *f* , `RangeSum_v<from, to, step, f> `applies *f* to all *x* in `range(from, to, step)` and calculates the sum of *f*(*x*).
+Given an unary lambda function *f* , `RangeSum_v<from, to, step, f> `applies *f* to all *x* in `range(from, to, step)` and calculates the sum of *f*(*x*).
 
 *f* has a preset value similar to the Id(*x*). If we would like to customize our *f*, we must assign a value for *step*.
 
@@ -145,3 +145,17 @@ which I call `metaprint`. This name really cooool, right?
 
 Nesting `cons` will now result in problems.
 Why? I may never know looool.
+
+## Call members like chain.
+
+Using `Prototype` technique, this new feature is enabled now.
+
+```cpp
+cout << Eval<map::is::map> << endl;
+cout << Eval<r1::is::map> << endl;
+cout << Eval<r1::is::rational> << endl;
+```
+
+Really COOOOOOOOL!
+
+In the future more features will be added.

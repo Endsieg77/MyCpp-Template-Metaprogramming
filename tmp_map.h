@@ -17,14 +17,18 @@
 
 TMP_BEGIN
 
+struct MapPrototype: Prototype<MapPrototype>
+{
+    __TAGS__(Tags::map)
+};
+
 template <typename... _Mapto>
 struct Map
 { };
 
 template <>
-struct Map<>: Null
+struct Map<>: MapPrototype
 {
-    __TAGS__(Tags::map)
     using type    = Null;
     using next    = Null;
     using current = Null;

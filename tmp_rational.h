@@ -17,8 +17,16 @@
 
 TMP_BEGIN
 
-struct RationalPrototype: Prototype
-{ };
+inline static constexpr long long __abs__(long long _x)
+{
+    return
+    _x > 0 ? _x: -_x;
+}
+
+struct RationalPrototype: Prototype<RationalPrototype>
+{
+    __TAGS__(Tags::rational)
+};
 
 /** 
  *  @struct TMP.gcd_type is the compile-time
@@ -54,7 +62,6 @@ constexpr long long lcm_type_v = lcm_type<M, N>::value;
 struct Infinity: RationalPrototype
 {
     Infinity() = delete;
-    __TAGS__(Tags::rational)
     static constexpr long long num   = 1LL;
     static constexpr long long denom = 0LL;
 };
@@ -62,7 +69,6 @@ struct Infinity: RationalPrototype
 struct NegInfinity: RationalPrototype
 {
     NegInfinity() = delete;
-    __TAGS__(Tags::rational)
     static constexpr long long num   = -1LL;
     static constexpr long long denom = 0LL;
 };
@@ -77,8 +83,17 @@ struct Rational: RationalPrototype
 {
     static_assert(_P, "Divide Zero Exception!");
     Rational() = delete;
-    static constexpr long long num   = _Q / gcd_type_v<_Q, _P>;
-    static constexpr long long denom = _P / gcd_type_v<_Q, _P>;
+private:
+    enum __trivial: long long
+    {
+        __gcd_res         = gcd_type_v<_Q, _P>,
+        smaller_than_zero = (_Q < 0 && _P > 0) || (_P < 0 && _Q > 0),
+        num_res           = smaller_than_zero ? -__abs__(_Q) / __abs__(__gcd_res) : _Q / __gcd_res,
+        denom_res         = smaller_than_zero ?  __abs__(_P) / __abs__(__gcd_res) : _P / __gcd_res,
+    };
+public:
+    static constexpr long long num   = __trivial::num_res;
+    static constexpr long long denom = __trivial::denom_res;
     static constexpr double    value = static_cast<double>(_Q) / _P;
 
     static std::string to_string()
@@ -92,7 +107,6 @@ struct Rational: RationalPrototype
         else
             return std::to_string(num) + "/" + std::to_string(denom);
     }
-
     using real = Rational;
     using imag = Rational<0>;
     __TAGS__(Tags::rational, (denom == 1ULL ? (tag_type)Tags::integer : 0ULL));

@@ -120,6 +120,24 @@ struct IsSymbol
     __HAS_TAG__(Tags::symbol)
 };
 
+template <typename _Tp = void>
+struct Prototype
+{
+    struct is
+    {
+        using null      = IsNull<_Tp>;
+        using rational  = IsRational<_Tp>;
+        using integer   = IsInteger<_Tp>;
+        using boolean   = IsBoolean<_Tp>;
+        using condition = IsCondition<_Tp>;
+        using loop      = IsLoop<_Tp>;
+        using complex   = IsComplex<_Tp>;
+        using container = IsContainer<_Tp>;
+        using map       = IsMap<_Tp>;
+        using symbol    = IsSymbol<_Tp>;
+    };
+};
+
 TMP_END
 
 #endif
