@@ -16,20 +16,6 @@
 
 TMP_BEGIN
 
-/**
- *  @struct TMP.Null functions behind the curtain.
- */
-struct Null: Prototype<Null>
-{
-    Null() = delete;
-    __TAGS__(Tags::null)
-};
-
-struct PairPrototype: Prototype<PairPrototype>
-{
-    __TAGS__(Tags::pair)
-};
-
 template <typename _Car, typename _Cdr = Null>
 struct Pair: PairPrototype
 {
@@ -180,11 +166,6 @@ template <long long _From, long long _To, long long _Step = 1LL, typename _F = I
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #endif
-
-struct ConditionPrototype: Prototype<ConditionPrototype>
-{
-    __TAGS__(Tags::condition)
-};
 
 /**
  *  @struct If and Cond statement for TMP.
@@ -533,7 +514,7 @@ struct SqrtImpl
     { __TAGS__(Tags::rational) };
 
     template <typename Guess>
-    struct good_enough: LogicalPrototype
+    struct good_enough: LogicalPrototype<good_enough<Guess>>
     {
         static constexpr bool
             value

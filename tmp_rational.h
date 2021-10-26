@@ -23,11 +23,6 @@ inline static constexpr long long __abs__(long long _x)
     _x > 0 ? _x: -_x;
 }
 
-struct RationalPrototype: Prototype<RationalPrototype>
-{
-    __TAGS__(Tags::rational)
-};
-
 /** 
  *  @struct TMP.gcd_type is the compile-time
  *          gcd algorithm implementation.
@@ -59,14 +54,14 @@ struct lcm_type
 template <long long M, long long N>
 constexpr long long lcm_type_v = lcm_type<M, N>::value;
 
-struct Infinity: RationalPrototype
+struct Infinity: RationalPrototype<Infinity>
 {
     Infinity() = delete;
     static constexpr long long num   = 1LL;
     static constexpr long long denom = 0LL;
 };
 
-struct NegInfinity: RationalPrototype
+struct NegInfinity: RationalPrototype<NegInfinity>
 {
     NegInfinity() = delete;
     static constexpr long long num   = -1LL;
@@ -79,7 +74,7 @@ struct NegInfinity: RationalPrototype
  *  @param _Q is the numerator, @param _P the denominator.
  */
 template <long long _Q, long long _P = 1>
-struct Rational: RationalPrototype
+struct Rational: RationalPrototype<Rational<_Q, _P>>
 {
     static_assert(_P, "Divide Zero Exception!");
     Rational() = delete;
@@ -117,7 +112,7 @@ public:
  *          define integers.
  */
 template <long long _Q>
-struct Rational<_Q>: RationalPrototype
+struct Rational<_Q>: RationalPrototype<Rational<_Q>>
 {
     Rational() = delete;
     static constexpr long long num   = _Q;

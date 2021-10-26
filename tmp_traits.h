@@ -19,6 +19,31 @@
 
 TMP_BEGIN
 
+template <typename _L1> struct LogicalPrototype;
+template <typename _L1, typename _L2> struct And;
+template <typename _L1, typename _L2> struct Or;
+struct True_type;
+struct False_type;
+template <typename _Boolean, typename _Then, typename _Else> struct If;
+
+/**
+ *  Comparisons declaration:
+ */
+template <typename _R1, typename _R2> struct Equal;
+template <typename _R1, typename _R2> struct GreaterEqual;
+template <typename _R1, typename _R2> struct LessEqual;
+template <typename _R1, typename _R2> struct Greater;
+template <typename _R1, typename _R2> struct Less;
+template <typename _Statement> struct Not;
+
+/**
+ *  Basic Arithmetics declaration:
+ */
+template <typename _R1, typename _R2> struct Plus;
+template <typename _R1, typename _R2> struct Minus;
+template <typename _R1, typename _R2> struct Multiply;
+template <typename _R1, typename _R2> struct Divide;
+
 /**
  *  Universal tag type.
  */
@@ -40,6 +65,7 @@ enum class Tags: tag_type
     pair      = 1ULL << 7ULL,
     map       = 1ULL << 8ULL,
     symbol    = 1ULL << 9ULL,
+    procedure = 1ULL << 10ULL,
 };
 
 template<typename... Tag>
@@ -49,193 +75,180 @@ inline constexpr tag_type tag_helper(Tag&&... tags)
 }
 
 template <typename _Tp>
-struct IsNull
+struct IsNull: LogicalPrototype<IsNull<_Tp>>
 {
     IsNull() = delete;
     static constexpr bool value = _Tp::tag == 0;
 };
 
 template <typename _Tp>
-struct IsNotNull
+struct IsNotNull: LogicalPrototype<IsNotNull<_Tp>>
 {
     IsNotNull() = delete;
     static constexpr bool value = !IsNull<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsRational
+struct IsRational: LogicalPrototype<IsRational<_Tp>>
 {
     IsRational() = delete;
     __HAS_TAG__(Tags::rational)
 };
 
 template <typename _Tp>
-struct IsNotRational
+struct IsNotRational: LogicalPrototype<IsNotRational<_Tp>>
 {
     IsNotRational() = delete;
     static constexpr bool value = !IsRational<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsInteger
+struct IsInteger: LogicalPrototype<IsInteger<_Tp>>
 {
     IsInteger() = delete;
     __HAS_TAG__(Tags::integer)
 };
 
 template <typename _Tp>
-struct IsNotInteger
+struct IsNotInteger: LogicalPrototype<IsNotInteger<_Tp>>
 {
     IsNotInteger() = delete;
     static constexpr bool value = !IsInteger<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsBoolean
+struct IsBoolean: LogicalPrototype<IsBoolean<_Tp>>
 {
     IsBoolean() = delete;
     __HAS_TAG__(Tags::boolean)
 };
 
 template <typename _Tp>
-struct IsNotBoolean
+struct IsNotBoolean: LogicalPrototype<IsNotBoolean<_Tp>>
 {
     IsNotBoolean() = delete;
     static constexpr bool value = !IsBoolean<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsCondition
+struct IsCondition: LogicalPrototype<IsCondition<_Tp>>
 {
     IsBoolean() = delete;
     __HAS_TAG__(Tags::condition)
 };
 
 template <typename _Tp>
-struct IsNotCondition
+struct IsNotCondition: LogicalPrototype<IsNotCondition<_Tp>>
 {
     IsNotCondition() = delete;
     static constexpr bool value = !IsCondition<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsLoop
+struct IsLoop: LogicalPrototype<IsLoop<_Tp>>
 {
     IsBoolean() = delete;
     __HAS_TAG__(Tags::loop)
 };
 
 template <typename _Tp>
-struct IsNotLoop
+struct IsNotLoop: LogicalPrototype<IsNotLoop<_Tp>>
 {
     IsNotLoop() = delete;
     static constexpr bool value = !IsLoop<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsComplex
+struct IsComplex: LogicalPrototype<IsComplex<_Tp>>
 {
     __HAS_TAG__(Tags::complex)
 };
 
 template <typename _Tp>
-struct IsNotComplex
+struct IsNotComplex: LogicalPrototype<IsNotComplex<_Tp>>
 {
     IsNotComplex() = delete;
     static constexpr bool value = !IsComplex<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsContainer
+struct IsContainer: LogicalPrototype<IsContainer<_Tp>>
 {
     __HAS_TAG__(Tags::container)
 };
 
 template <typename _Tp>
-struct IsNotContainer
+struct IsNotContainer: LogicalPrototype<IsNotContainer<_Tp>>
 {
     IsNotContainer() = delete;
     static constexpr bool value = !IsContainer<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsPair
+struct IsPair: LogicalPrototype<IsPair<_Tp>>
 {
     __HAS_TAG__(Tags::pair)
 };
 
 template <typename _Tp>
-struct IsNotPair
+struct IsNotPair: LogicalPrototype<IsNotPair<_Tp>>
 {
     IsNotPair() = delete;
     static constexpr bool value = !IsPair<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsMap
+struct IsMap: LogicalPrototype<IsMap<_Tp>>
 {
     __HAS_TAG__(Tags::map)
 };
 
 template <typename _Tp>
-struct IsNotMap
+struct IsNotMap: LogicalPrototype<IsNotMap<_Tp>>
 {
     IsNotMap() = delete;
     static constexpr bool value = !IsMap<_Tp>::value;
 };
 
 template <typename _Tp>
-struct IsSymbol
+struct IsSymbol: LogicalPrototype<IsSymbol<_Tp>>
 {
     __HAS_TAG__(Tags::symbol)
 };
 
 template <typename _Tp>
-struct IsNotSymbol
+struct IsNotSymbol: LogicalPrototype<IsNotSymbol<_Tp>>
 {
     IsNotSymbol() = delete;
     static constexpr bool value = !IsSymbol<_Tp>::value;
 };
 
-namespace IsNotDetails
+template <typename _Tp>
+struct IsProcedure: LogicalPrototype<IsProcedure<_Tp>>
 {
-    template <typename _Tp>
-    struct IsNotImpl
-    {
-        struct _not
-        {        
-            using null      = IsNotNull<_Tp>;
-            using rational  = IsNotRational<_Tp>;
-            using integer   = IsNotInteger<_Tp>;
-            using boolean   = IsNotBoolean<_Tp>;
-            using condition = IsNotCondition<_Tp>;
-            using loop      = IsNotLoop<_Tp>;
-            using complex   = IsNotComplex<_Tp>;
-            using container = IsNotContainer<_Tp>;
-            using map       = IsNotMap<_Tp>;
-            using symbol    = IsNotSymbol<_Tp>;
-        };
-    };
-}
-
-template <typename _Tp = void>
-struct Prototype
-{
-    struct is: IsNotDetails::IsNotImpl<_Tp>
-    {
-        using null      = IsNull<_Tp>;
-        using rational  = IsRational<_Tp>;
-        using integer   = IsInteger<_Tp>;
-        using boolean   = IsBoolean<_Tp>;
-        using condition = IsCondition<_Tp>;
-        using loop      = IsLoop<_Tp>;
-        using complex   = IsComplex<_Tp>;
-        using container = IsContainer<_Tp>;
-        using map       = IsMap<_Tp>;
-        using symbol    = IsSymbol<_Tp>;
-    };
+    __HAS_TAG__(Tags::procedure)
 };
 
+template <typename _Tp>
+struct IsNotProcedure: LogicalPrototype<IsNotProcedure<_Tp>>
+{
+    IsNotProcedure() = delete;
+    static constexpr bool value = !IsProcedure<_Tp>::value;
+};
+
+template <typename _L>
+struct IsTrue
+{
+    static_assert(Eval<typename _L::is::boolean>, "Only Logical values can be true or false!");
+    static constexpr bool value = Eval<_L>;
+};
+
+template <typename _L>
+struct IsFalse
+{
+    static_assert(Eval<typename _L::is::boolean>, "Only Logical values can be true or false!");
+    static constexpr bool value = !Eval<_L>;
+};
 
 TMP_END
 

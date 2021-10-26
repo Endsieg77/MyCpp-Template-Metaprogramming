@@ -17,11 +17,6 @@
 
 TMP_BEGIN
 
-struct MapPrototype: Prototype<MapPrototype>
-{
-    __TAGS__(Tags::map)
-};
-
 template <typename... _Mapto>
 struct Map
 { };
@@ -34,6 +29,28 @@ struct Map<>: MapPrototype
     using current = Null;
 };
 
+namespace ForDetails
+{
+
+template <typename Map, unsigned _Times>
+struct ForImpl
+{
+    static std::ostream &print(std::ostream &os)
+    {
+        ReadMap<Map>(os) << std::endl;
+        return ForImpl<Map, _Times - 1>::print(os);
+    }
+};
+
+template <typename Map>
+struct ForImpl<Map, 0>
+{
+    static std::ostream &print(std::ostream &os)
+    { return os; }
+};
+
+};
+
 template <typename _First,typename... _Mapto>
 struct Map<_First, _Mapto...>: Map<_Mapto...>
 {
@@ -41,6 +58,32 @@ struct Map<_First, _Mapto...>: Map<_Mapto...>
     using type    = _First;
     using current = Map<_First, _Mapto...>;
     using next    = Map<_Mapto...>;
+    struct shall
+    {
+        struct showItsMetainfo
+        {
+            static std::ostream &with(std::ostream &os)
+            { return ReadMap<Map>(os); }
+            struct once
+            {
+                static constexpr auto with = showItsMetainfo::with;
+            };
+            struct twice
+            {
+                static std::ostream &with(std::ostream &os)
+                { return ForDetails::ForImpl<Map, 2>::print(os); }
+            };
+            template <unsigned _Times>
+            struct _for
+            {
+                struct times
+                {
+                    static std::ostream &with(std::ostream &os) 
+                    { return ForDetails::ForImpl<Map, _Times>::print(os); }
+                };
+            };
+        };
+    };
 };
 
 namespace ReadMapDetails

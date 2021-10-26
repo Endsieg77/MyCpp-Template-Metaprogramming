@@ -157,6 +157,19 @@ cout << Eval<r1::is::rational> << endl;
 cout << Eval<r1::is::_not::rational> << endl;
 ```
 
-Really COOOOOOOOL!
+## Clause
 
-In the future more features will be added.
+```cpp
+cout << Eval<It::is::False::that<
+                r1::plus<r2>::is::_not::equal_to<r3>
+            ::_and<
+                map::is::_not::map::_or<map::is::map>>>> << endl;
+```
+
+## Do... if
+
+```cpp
+Do<[] () { cout << "Test" << endl; }>
+    ::If<r1::is::_not::equal_to<r2>>::execute();
+```
+

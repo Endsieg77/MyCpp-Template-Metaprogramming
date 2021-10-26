@@ -6,6 +6,13 @@
 using namespace std;
 using namespace siebenzevan;
 
+template <typename>
+struct A {
+    struct B {
+        struct C {};
+    };
+};
+
 int main()
 {
     ios::sync_with_stdio(false);
@@ -24,9 +31,6 @@ int main()
 
     cout << Eval<Sqrt<Rational<2>>> << endl;
     cout << Eval<Sqrt<Rational<414, 567>>> << endl;
-
-    using _if = If<Greater<r1, r2>, r1, r2>;
-    cout << Eval<_if> << endl;
     
     using _res =
       Cond<
@@ -35,13 +39,6 @@ int main()
           Case<Greater<r0, r4>, r4>,
           Else<r3>,
           Else<r4>>;
-        
-    cout << Eval<_res> << endl;
-    cout << c1::to_string() << ' ' << c2::to_string() << endl;
-    cout << Plus<c1, c2>::to_string() << endl;
-    cout << Minus<c1, c2>::to_string() << endl;
-    cout << Divide<c1, c2>::to_string() << endl;
-    cout << Multiply<c1, c2>::to_string() << endl;
 
     using map =
       Map<
@@ -50,17 +47,22 @@ int main()
           cons<c3, r2>,
           cons<Plus<c1, c3>, r4>,
           cons<symbol("Hello, world."), c3>>;
-    ReadMap<map>(cout);
 
-    // metaprint<r2>(cout) << endl;
-    // metaprint<i1>(cout) << endl;
-    // metaprint<c3>(cout) << endl;
-    // metaprint<cons<r1, c3>>(cout) << endl;
-    // metaprint<symbol("wssb")>(cout) << endl;
+    metaprint<symbol("wssb")>(cout) << endl;
     cout << Eval<map::is::map> << endl;
-    cout << Eval<r1::is::map> << endl;
     cout << Eval<r1::is::rational> << endl;
     cout << Eval<r1::is::_not::rational> << endl;
+    map::shall::showItsMetainfo::with(cout) << endl;
+    map::shall::showItsMetainfo::twice::with(cout) << endl;
+    map::shall::showItsMetainfo::_for<4>::times::with(cout) << endl;
+
+
+    cout << Eval<It::is::False::that<
+                    r1::plus<r2>::is::_not::equal_to<r3>
+                ::_and<
+                    map::is::_not::map::_or<map::is::map>>>> << endl;
+    Do<[] () { cout << "Test" << endl; }>
+        ::If<r1::is::_not::equal_to<r2>>::execute();
 
     return 0;
 }

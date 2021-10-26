@@ -9,12 +9,6 @@
 
 TMP_BEGIN
 
-template <typename _Symb>
-struct SymbolPrototype: Prototype<_Symb>
-{
-    __TAGS__(Tags::symbol)
-};
-
 // from https://github.com/irrequietus/typestring
 namespace SymbolDetails
 {
