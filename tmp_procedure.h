@@ -58,7 +58,7 @@ namespace DoDetails
 
     struct __default__call_
     {
-        static void execute() {}
+        static void execute(...) {}
     }; 
 }
 

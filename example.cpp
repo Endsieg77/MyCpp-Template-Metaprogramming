@@ -56,13 +56,12 @@ int main()
     map::shall::showItsMetainfo::twice::with(cout) << endl;
     map::shall::showItsMetainfo::_for<4>::times::with(cout) << endl;
 
-
-    cout << Eval<It::is::False::that<
-                    r1::plus<r2>::is::_not::equal_to<r3>
-                ::_and<
-                    map::is::_not::map::_or<map::is::map>>>> << endl;
-    Do<[] () { cout << "Test" << endl; }>
-        ::If<r1::is::_not::equal_to<r2>>::execute();
+    Do<[] (int x) { cout << "Test" << endl; }>
+        ::If<It::is::False::that<
+                r1::plus<r2>::is::_not::equal_to<r3>
+            ::_and<
+                map::is::_not::map::_or<map::is::map>>>>
+        ::execute(1);
 
     return 0;
 }
