@@ -1,7 +1,7 @@
 # MyCpp-Template-Metaprogramming
 My Library for simple CTMP
 
-Before we start, make sure your C++ Standard is over C++17.
+Before we start, make sure your C++ Standard is over C++20.
 
 ## Start
 
@@ -225,7 +225,4 @@ let _res =
       _else(r3));
 
 let c3   = _make_complex(_make_rat(19 _over 7), _make_rat(-3 _over 11));
-
-print _evaluate(_sqrt(r3)) newline;
-print _evaluate(_sqrt(make_rat(414 _over 567))) newline;
 ```
