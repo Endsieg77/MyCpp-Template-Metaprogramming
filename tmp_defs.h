@@ -45,16 +45,13 @@
 #define make_complex(_rat1, _rat2) Complex<_rat1, _rat2>
 #define _over ,
 #define _sqrt(_rat) Sqrt<_rat>
+#define lambda(...) [=] (__VA_ARGS__)
 
 /* Conditions: */
 #define cond(...) Cond<__VA_ARGS__>
 #define _case(Pred_Conseq) Case<Pred_Conseq>
 #define _else(Conseq) Else<Conseq>
 #define _then ,
-
-/* Outputs: */
-#define print std::cout <<
-#define newline << std::endl
 
 /* Do... if */
 #define _Do(Procedure) Do<Procedure>

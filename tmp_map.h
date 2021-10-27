@@ -127,10 +127,9 @@ struct ReadHelper<Map<>>
 }
 
 template <typename _Map,
-          typename = typename std::enable_if<Eval<IsMap<_Map>>>>
+          typename>
 std::ostream &ReadMap(std::ostream &os)
 {
-    
     os << "====================== MAP BEGIN ======================" << std::endl;
     ReadMapDetails
       ::ReadHelper<_Map>

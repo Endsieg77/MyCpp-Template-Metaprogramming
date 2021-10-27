@@ -195,7 +195,7 @@ namespace IfDetails
 template <typename _Boolean, typename _Then, typename _Else>
 struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>, ConditionPrototype
 {
-    static_assert(Eval<IsBoolean<_Boolean>>, "The If Predicate MUST be of boolean type.");
+    static_assert(_Boolean::is::boolean::value, "The If Predicate MUST be of boolean type.");
     If() = delete;
 };
 
@@ -276,7 +276,7 @@ struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type, ConditionPrototype
  *          to some degree.
  */
 template <typename R>
-struct Negate
+struct Negate: RationalPrototype<Negate<R>>
 {
     Negate() = delete;
     static constexpr long long num    = -R::num;
@@ -514,18 +514,15 @@ struct SqrtImpl
     { __TAGS__(Tags::rational) };
 
     template <typename Guess>
-    struct good_enough: LogicalPrototype<good_enough<Guess>>
-    {
-        static constexpr bool
-            value
-        = Less<Abs<Minus<Guess, Divide<X, Guess>>>, Rational<1LL, precision>>::value;
-    };
+    struct good_enough
+        : Less<Abs<Minus<Guess, Divide<X, Guess>>>, Rational<1, precision>>
+    { };
 
     template <typename Guess>
-    struct _try: If<good_enough<Guess>, Guess, _try<improve<Guess>>>::type
+    struct __try__: If<good_enough<Guess>, Guess, __try__<improve<Guess>>>::type
     { __TAGS__(Tags::rational) };
 
-    using type = _try<Rational<(long long)SqrtConstants::first_try>>;
+    using type = __try__<Rational<(long long)SqrtConstants::first_try>>;
 };
 }
 

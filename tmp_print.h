@@ -9,6 +9,9 @@
 
 TMP_BEGIN
 
+template <typename _Map, typename = typename std::enable_if<Eval<IsMap<_Map>>>>
+std::ostream &ReadMap(std::ostream &os);
+
 namespace printNamespace
 {
     template <typename _Tp, typename = void>
@@ -60,6 +63,17 @@ namespace printNamespace
         static std::ostream &print(std::ostream &os)
         {
             os << _Tp::value;
+            return os;
+        }
+    };
+
+    template <typename _Tp>
+    struct printHelper<_Tp,
+                       typename std::enable_if<Eval<IsMap<_Tp>>>::type>
+    {
+        static std::ostream &print(std::ostream &os)
+        {
+            ReadMap<_Tp>(os);
             return os;
         }
     };

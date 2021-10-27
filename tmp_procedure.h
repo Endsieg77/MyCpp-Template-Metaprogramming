@@ -17,36 +17,36 @@
 
 TMP_BEGIN
 
-template <typename _Tp>
-struct Function
-{
-    Function() = delete;
-};
-
-template <typename _Ret, typename... _Params>
-struct Function<_Ret(_Params...)>: Prototype<Function<_Ret(_Params...)>>
-{
-    using type        = Function<_Ret(_Params...)>;
-    using return_type = _Ret;
-    using value_type  = _Ret(*)(_Params...);
-public:
-#if __cplusplus >= 201103L && __cplusplus < 202002L
-    template <typename _Tp,
-              typename = typename std::enable_if<std::is_convertible<_Tp, value_type>::value>::type>
-    Function(_Tp
-#elif __cplusplus >= 202002L
-    Function(std::convertible_to<_Ret(*)(_Params...)> auto
-#endif
-      &&fp)
-        : _fp(std::move(fp)) { };
-    type &operator=(value_type &&fp) { _fp = fp; };
-    constexpr _Ret operator()(_Params&&... param) const
-    { return _fp(std::forward<_Params>(param)...); };
-
-    __TAGS__(Tags::procedure)
-private:
-    value_type _fp = nullptr;
-};
+//template <typename _Tp>
+//struct Function
+//{
+//    Function() = delete;
+//};
+//
+//template <typename _Ret, typename... _Params>
+//struct Function<_Ret(_Params...)>: Prototype<Function<_Ret(_Params...)>>
+//{
+//    using type        = Function<_Ret(_Params...)>;
+//    using return_type = _Ret;
+//    using value_type  = _Ret(*)(_Params...);
+//public:
+//#if __cplusplus >= 201703L && __cplusplus < 202002L
+//    template <typename _Tp,
+//              typename = typename std::enable_if_t<std::is_convertible_v<_Tp, value_type>>>
+//    Function(_Tp
+//#elif __cplusplus >= 202002L
+//    Function(std::convertible_to<_Ret(*)(_Params...)> auto
+//#endif
+//      &&fp)
+//        : _fp(std::move(fp)) { };
+//    type &operator=(value_type &&fp) { _fp = fp; };
+//    constexpr _Ret operator()(_Params&&... param) const
+//    { return _fp(std::forward<_Params>(param)...); };
+//
+//    __TAGS__(Tags::procedure)
+//private:
+//    value_type _fp = nullptr;
+//};
 
 namespace DoDetails
 {
@@ -56,7 +56,7 @@ namespace DoDetails
         static constexpr auto execute = Procedure;
     };
 
-    struct __default__call_
+    struct __default__call__
     {
         static void execute(...) {}
     }; 
@@ -70,9 +70,9 @@ struct Do: Prototype<Do<Procedure>>
     struct If
         : siebenzevan::If<Cond,
                           DoDetails::DoIfImpl<Procedure>,
-                          DoDetails::__default__call_>::type
+                          DoDetails::__default__call__>::type
     { };
-    __TAGS__(Procedure)
+    __TAGS__(Tags::procedure)
 };
 
 TMP_END
