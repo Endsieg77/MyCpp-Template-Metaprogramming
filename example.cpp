@@ -1,46 +1,40 @@
 #pragma GCC optimize(2)
 #include "tmp.h"
 #include <iostream>
-#include <string_view>
 
 using namespace std;
-using namespace siebenzevan;
-
-template <typename>
-struct A {
-    struct B {
-        struct C {};
-    };
-};
+__ENABLE_CONVENIENT_TMP__
 
 int main()
 {
     ios::sync_with_stdio(false);
     cin.tie(0);
 
-    using r0 = Rational<0>;
-    using r1 = Rational<4, 6>;
-    using r2 = Rational<11, 4>;
-    using r3 = Rational<15, 2>;
-    using r4 = Rational<1>;
-    using c1 = Complex<Rational<3, 4>, Rational<1>>;
-    using c2 = Complex<Rational<3, 4>, Rational<-1>>;
-    using c3 = Complex<Rational<19, 7>, Rational<-3, 11>>;
-    using i1 = Integer<3>;
-    using symb = symbol("You really born singer.");
+    let r0   = make_rat(0);
+    let r1   = make_rat(4 _over 6);
+    let r2   = make_rat(11 _over 4);
+    let r3   = make_rat(15 _over 2);
+    let r4   = make_int(1);
+    let c1   = make_complex(make_rat(3 _over 4),  make_rat(1));
+    let c2   = make_complex(make_rat(3 _over 4),  make_rat(-1));
+    let c3   = make_complex(make_rat(19 _over 7), make_rat(-3 _over 11));
+    let i1   = make_int(3);
+    let symb = symbol("You really born singer.");
 
-    cout << Eval<Sqrt<Rational<2>>> << endl;
-    cout << Eval<Sqrt<Rational<414, 567>>> << endl;
+    print evaluate(_sqrt(r3)) newline;
+    print evaluate(_sqrt(make_rat(414 _over 567))) newline;
     
-    using _res =
-      Cond<
-          Case<And<Less<r2, r1>, Less<r4, r1>>, r1>,
-          Case<Or<Less<r3, r2>, LessEqual<r4, r0>>, r2>,
-          Case<Greater<r0, r4>, r4>,
-          Else<r3>,
-          Else<r4>>;
+    let _res =
+      cond(
+          _case(r2 _is less_than(r1) __and(r4 _is less_than(r1))
+                    _then r1),
+          _case(r3 _is less_equal_than(r1)
+                    _then r2),
+          _case(r0 _is greater_than(r1)
+                    _then r4),
+          _else(r3));
 
-    using map =
+    let map =
       Map<
           cons<c2, r1>,
           cons<c1, r3>,
@@ -48,20 +42,23 @@ int main()
           cons<Plus<c1, c3>, r4>,
           cons<symbol("Hello, world."), c3>>;
 
-    metaprint<symbol("wssb")>(cout) << endl;
-    cout << Eval<map::is::map> << endl;
-    cout << Eval<r1::is::rational> << endl;
-    cout << Eval<r1::is::_not::rational> << endl;
-    map::shall::showItsMetainfo::with(cout) << endl;
-    map::shall::showItsMetainfo::twice::with(cout) << endl;
-    map::shall::showItsMetainfo::_for<4>::times::with(cout) << endl;
+    metaprint<symbol("wssb")>(cout) newline;
+    map _shall::showItsMetainfo::with(cout) newline;
+    map _shall::showItsMetainfo::twice::with(cout) newline;
+    map _shall::showItsMetainfo::_for<4>::times::with(cout) newline;
 
-    Do<[] (int x) { cout << "Test" << endl; }>
-        ::If<It::is::False::that<
-                r1::plus<r2>::is::_not::equal_to<r3>
-            ::_and<
-                map::is::_not::map::_or<map::is::map>>>>
-        ::execute(1);
+    
+    auto SomePrint = [] () { metaprint<symbol("Wsgjb")>(cout) << endl; };
+
+    let to_do =
+      _Do(SomePrint)
+          _If(It _is _false _that(
+                  r1 _plus(r2) _minus(r4) _is __not equal_to(r3)
+              __and(
+                      map _is __not _map
+                  __or(
+                      map _is _map))));
+    to_do instantly();
 
     return 0;
 }

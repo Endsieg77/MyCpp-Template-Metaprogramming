@@ -1,6 +1,8 @@
 # MyCpp-Template-Metaprogramming
 My Library for simple CTMP
 
+Before we start, make sure your C++ Standard is over C++17.
+
 ## Start
 
 ```cpp
@@ -26,6 +28,11 @@ using r2   = Rational<11, 4>;
 using r3   = Rational<15, 2>;
 using r4   = Rational<1>;
 using symb = symbol("Hello, world"); // symb is a symbol.
+```
+
+or with macro `let`
+```cpp
+let symb = symbol("You really born singer.");
 ```
 
 ## `Traits`
@@ -168,8 +175,57 @@ cout << Eval<It::is::False::that<
 
 ## Do... if
 
+Template `Do<[LambdaExpr]>::If<[Logical]>`. Only available after C++17.
+
+Lambda can have some parameters, and it may not be called instantly.
+
+If `Eval<[Logical]>` is `true`, we can call the Lambda by static member
+
+`Do<[LambdaExpr]>::If<[Logical]>::execute(params...)`.
+
+And if false, the execute would be a void function that receives indefinite
+
+number of parameters and do nothing at all.
+
 ```cpp
-Do<[] () { cout << "Test" << endl; }>
-    ::If<r1::is::_not::equal_to<r2>>::execute();
+auto SomePrint = [] () { metaprint<symbol("Wsgjb")>(cout) << endl; };
+Do<SomePrint>
+    ::If<It::is::False::that<
+            r1::plus<r2>::minus<r4>::is::_not::equal_to<r3>
+        ::_and<
+                map::is::_not::map
+            ::_or<
+                map::is::map>>>>
+    ::execute();
 ```
 
+### Speak English in `siebenzevan`
+
+```cpp
+auto SomePrint = [] () { metaprint<symbol("Wsgjb")>(cout) << endl; };
+
+let to_do =
+  _Do(SomePrint)
+      _If(It _is _false _that(
+              r1 _plus(r2) _minus(r4) _is __not equal_to(r3)
+          __and(
+                  map _is __not _map
+              __or(
+                  map _is _map))));
+to_do instantly();
+
+let _res =
+  cond(
+      _case(r2 _is less_than(r1) __and(r4 _is less_than(r1))
+                _then r1),
+      _case(r3 _is less_equal_than(r1)
+                _then r2),
+      _case(r0 _is greater_than(r1)
+                _then r4),
+      _else(r3));
+
+let c3   = _make_complex(_make_rat(19 _over 7), _make_rat(-3 _over 11));
+
+print _evaluate(_sqrt(r3)) newline;
+print _evaluate(_sqrt(make_rat(414 _over 567))) newline;
+```

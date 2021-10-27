@@ -9,7 +9,8 @@
 #ifndef _TMP_H_
 #define _TMP_H_
 
-#define __ENABLE_CONVENIENT_TMP__ using namespace TMP;
+#define let using
+#define __ENABLE_CONVENIENT_TMP__ using namespace siebenzevan;
 #ifndef TMP_BEGIN
 #define TMP_BEGIN namespace siebenzevan {
 #endif
@@ -37,12 +38,38 @@ TMP_BEGIN
 template <typename _Tp>
 constexpr auto Eval = _Tp::value;
 
+template <typename _L1> struct LogicalPrototype;
+template <typename _L1, typename _L2> struct And;
+template <typename _L1, typename _L2> struct Or;
+struct True_type;
+struct False_type;
+template <typename _Boolean, typename _Then, typename _Else> struct If;
+
+/**
+ *  Comparisons declaration:
+ */
+template <typename _R1, typename _R2> struct Equal;
+template <typename _R1, typename _R2> struct GreaterEqual;
+template <typename _R1, typename _R2> struct LessEqual;
+template <typename _R1, typename _R2> struct Greater;
+template <typename _R1, typename _R2> struct Less;
+template <typename _Statement> struct Not;
+
+/**
+ *  Basic Arithmetics declaration:
+ */
+template <typename _R1, typename _R2> struct Plus;
+template <typename _R1, typename _R2> struct Minus;
+template <typename _R1, typename _R2> struct Multiply;
+template <typename _R1, typename _R2> struct Divide;
+
 TMP_END
 
 #include <iosfwd>
 #include <iomanip>
 #include <string>
 #include <utility>
+#include "tmp_defs.h"
 #include "tmp_traits.h"
 #include "tmp_prototype.h"
 #include "tmp_symbol.h"
