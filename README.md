@@ -202,7 +202,7 @@ Do<SomePrint>
 ### Speak English in `siebenzevan`
 
 ```cpp
-auto SomePrint = [] () { metaprint<symbol("Wsgjb")>(cout) << endl; };
+auto SomePrint = lambda() { metaprint<symbol("Wsgjb")>(cout) << endl; }
 
 let to_do =
   _Do(SomePrint)

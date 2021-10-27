@@ -47,8 +47,7 @@ int main()
     map _shall::showItsMetainfo::twice::with(cout) newline;
     map _shall::showItsMetainfo::_for<4>::times::with(cout) newline;
 
-    
-    auto SomePrint = [] () { metaprint<symbol("Wsgjb")>(cout) << endl; };
+    auto SomePrint = lambda() { metaprint<symbol("Wsgjb")>(cout) << endl; };
 
     let to_do =
       _Do(SomePrint)
