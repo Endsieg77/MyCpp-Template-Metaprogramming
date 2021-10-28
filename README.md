@@ -138,9 +138,10 @@ e.g.
 ReadMap<map>(std::cout);
 ```
 
-## `metaprint` is now supported
+## `metaprint`
 
 We can now print Object's information like this,
+
 ```cpp
 metaprint<r2>(cout) << endl;
 metaprint<i1>(cout) << endl;
@@ -148,6 +149,7 @@ metaprint<c3>(cout) << endl;
 metaprint<cons<r1, c3>>(cout) << endl;
 metaprint<symb>(cout) << endl;
 ```
+
 which I call `metaprint`. This name really cooool, right?
 
 Nesting `cons` will now result in problems.
@@ -200,6 +202,10 @@ Do<SomePrint>
 ```
 
 ### Speak English in `siebenzevan`
+
+You should define `__ENABLE_TMP_plusplus__` in front of the inclusion of `tmp.h` to obtain this feature,
+
+'coz instable it is. Its essence is only a set of Macros.
 
 ```cpp
 auto SomePrint = lambda() { metaprint<symbol("Wsgjb")>(cout) << endl; }
