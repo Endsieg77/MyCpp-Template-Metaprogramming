@@ -21,7 +21,7 @@ int main()
     let i1   = make_int(3);
     let symb = symbol("You really born singer.");
 
-    std::cout << evaluate(_sqrt(make_rat(414 _over 567))) << std::endl;
+    display evaluate(_sqrt(make_rat(414 _over 567))) newline;
     
     let _res =
       cond(
@@ -41,14 +41,14 @@ int main()
           cons<Plus<c1, c3>, r4>,
           cons<symbol("Hello, world."), c3>>;
 
-    metaprint<symbol("wssb")> (cout) << std::endl;
-    map _shall::showItsMetainfo::with (cout) << std::endl;
-    map _shall::showItsMetainfo::twice::with (cout) << std::endl;
-    map _shall::showItsMetainfo::_for<4>::times::with (cout) << std::endl;
+    metaprint<symbol("wssb")> (cout) newline;
+    map _shall::showItsMetainfo::with (cout) newline;
+    map _shall::showItsMetainfo::twice::with (cout) newline;
+    map _shall::showItsMetainfo::_for<4>::times::with (cout) newline;
 
     static constexpr auto SomePrint = lambda() { metaprint<symbol("Wsgjb")>(cout) << endl; };
 
-    let to_do =
+    let us =
       _Do(SomePrint)
         _If(It _is _false _that(
                 r1 _plus(r2) _minus(r4) _is __not equal_to(r3)
@@ -56,7 +56,7 @@ int main()
                     map _is __not _map
                 __or(
                     map _is _map))));
-    to_do instantly();
+    us instantly();
 
     return 0;
 }

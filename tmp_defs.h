@@ -1,6 +1,9 @@
 #ifndef __TMP_DEFS_H__
 #define __TMP_DEFS_H__
 
+#define display std::cout << std::boolalpha <<
+#define newline << std::endl;
+
 #define _is ::is
 #define _shall ::shall
 #define _that(Logical) ::that<Logical>
