@@ -69,7 +69,9 @@ TMP_END
 #include <iomanip>
 #include <string>
 #include <utility>
-#include "tmp_defs.h"
+#ifdef __ENABLE_TMP_plusplus__
+    #include "tmp_defs.h"
+#endif
 #include "tmp_traits.h"
 #include "tmp_prototype.h"
 #include "tmp_symbol.h"
