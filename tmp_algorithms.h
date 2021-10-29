@@ -19,7 +19,6 @@ TMP_BEGIN
 template <typename _Car, typename _Cdr = Null>
 struct Pair: PairPrototype
 {
-    Pair() = delete;
     using type = Pair;
     using car  = _Car;
     using cdr  = _Cdr;
@@ -33,9 +32,7 @@ struct Pair: PairPrototype
  */
 template <typename _Car, typename _Cdr>
 struct cons: Pair<_Car, _Cdr>
-{
-    cons() = delete;
-};
+{ };
 
 /** 
  *  @brief  scheme-style car
@@ -45,7 +42,6 @@ template <typename Cons>
 struct car: Cons::car
 {
     static_assert(Eval<IsPair<Cons>>);
-    car() = delete;
 };
 
 /** 
@@ -56,10 +52,9 @@ template <typename Cons>
 struct cdr: Cons::cdr
 {
     static_assert(Eval<IsPair<Cons>>);
-    cdr() = delete;
 };
 
-#if __cplusplus >= 201709L
+#if __cplusplus >= 202004L
 
 // RangeSum implementation details are hidden here:
 namespace RangeSumDetails
@@ -98,9 +93,7 @@ struct RangeSum:
         _F,
         (_From >= _To && _Step > 0LL) ||
         (_From <= _To && _Step < 0LL)>
-{
-    RangeSum() = delete;
-};
+{ };
 
 /** 
  *  @struct TMP.RangeSum<from, to, 0> for conditions
@@ -111,44 +104,36 @@ template <long long _From, long long _To, auto _F>
 struct RangeSum<_From, _To, 0LL, _F>
 { };
 
-// Variable with params (After C++ 17)
 template <long long _From, long long _To, long long _Step = 1LL, auto _F = [](long long &&_){return _;}>
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #else // _HAS_NO_CXX20
 
-template <int N = 0LL>
-struct Identity
-{
-    static constexpr int value = N;
-    static constexpr int _call_(int &&n) { return n; }
-};
-
 namespace RangeSumDetails
 {
-    template <long long _From, long long _To, long long _Step, typename _F, bool _Stop>
+    template <long long _From, long long _To, long long _Step, template <long long> typename _F, bool _Stop>
     struct RangeSumImpl
     {
         static_assert(_Step, "Step cannot be set zero!");
         static constexpr long long
         value =
-        _F::_call_(_From) +
+        _F<_From>::value +
         RangeSumImpl<
             _From + _Step,
             _To,
             _Step,
             _F,
             (_From + _Step >= _To && _Step > 0LL) ||
-            (_From + _Step <= _To && _Step < 0LL)
-        >::value;
+            (_From + _Step <= _To && _Step < 0LL)>
+        ::value;
     };
 
-    template <long long _From, long long _To, long long _Step, typename _F>
+    template <long long _From, long long _To, long long _Step, template <long long> typename _F>
     struct RangeSumImpl<_From, _To, _Step, _F, true>
     { static constexpr long long value = 0LL; };
 }
 
-template <long long _From, long long _To, long long _Step = 1LL, typename _F = Identity<>>
+template <long long _From, long long _To, long long _Step = 1, template <long long> typename _F = Integer>
 struct RangeSum:
     RangeSumDetails::RangeSumImpl<
         _From,
@@ -157,12 +142,9 @@ struct RangeSum:
         _F,
         (_From >= _To && _Step > 0LL) ||
         (_From <= _To && _Step < 0LL)>
-{
-    RangeSum() = delete;
-    static constexpr long long _call_() { return RangeSum<_From, _To, _Step, _F>::value; }
-};
+{ };
 
-template <long long _From, long long _To, long long _Step = 1LL, typename _F = Identity<>>
+template <long long _From, long long _To, long long _Step = 1LL, template <long long> typename _F = Integer>
 constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 
 #endif
@@ -196,7 +178,6 @@ template <typename _Boolean, typename _Then, typename _Else>
 struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>, ConditionPrototype
 {
     static_assert(_Boolean::is::boolean::value, "The If Predicate MUST be of boolean type.");
-    If() = delete;
 };
 
 /**
@@ -207,7 +188,6 @@ template <typename _Pred, typename _Conseq>
 struct Case: Pair<_Pred, _Conseq>, ConditionPrototype
 {
     static_assert(Eval<IsBoolean<_Pred>>, "The Case Predicate MUST be of boolean type.");
-    Case() = delete;
 };
 
 /**
@@ -217,9 +197,7 @@ struct Case: Pair<_Pred, _Conseq>, ConditionPrototype
  */
 template <typename _Else>
 struct Else: cons<True_type, _Else>, ConditionPrototype
-{
-    Else() = delete;
-};
+{ };
 
 namespace CondDetails
 {
@@ -266,9 +244,7 @@ struct CondImpl<_LstButNotLeast>
 
 template <typename... Pred_Conseq>
 struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type, ConditionPrototype
-{
-    Cond() = delete;
-};
+{ };
 
 /**
  *  @struct TMP.Negate yields the opposition of Rational,
@@ -278,7 +254,6 @@ struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type, ConditionPrototype
 template <typename R>
 struct Negate: RationalPrototype<Negate<R>>
 {
-    Negate() = delete;
     static constexpr long long num    = -R::num;
     static constexpr long long denom  =  R::denom;
     static constexpr double    value  = -R::value;
@@ -303,18 +278,14 @@ struct AbsImpl<R, false>: Negate<R>
  */
 template <typename R>
 struct Abs: AbsDetails::AbsImpl<R, Greater<R, Rational<0>>::value>
-{
-    Abs() = delete;
-};
+{ };
 
 /**
  *  @struct TMP.Square yields square of Rational.
  */
 template <typename R>
 struct Square: Rational<R::num * R::num, R::denom * R::denom>
-{
-    Square() = delete;
-};
+{ };
 
 /**
  *  @namespace TMP.BasicDetails hides the implementation of
@@ -444,45 +415,31 @@ namespace ArithmeticDetails
 
 template <typename _Lhs, typename _Rhs>
 struct Plus: ArithmeticDetails::PlusImpl<_Lhs, _Rhs>::type
-{
-    Plus() = delete;
-};
+{ };
 
 template <typename _Lhs, typename _Rhs>
 struct Minus: ArithmeticDetails::MinusImpl<_Lhs, _Rhs>::type
-{
-    Minus() = delete;
-};
+{ };
 
 template <typename _Lhs, typename _Rhs>
 struct Multiply: ArithmeticDetails::MultiplyImpl<_Lhs, _Rhs>::type
-{
-    Multiply() = delete;
-};
+{ };
 
 template <typename _Lhs, typename _Rhs>
 struct Divide: ArithmeticDetails::DivideImpl<_Lhs, _Rhs>::type
-{
-    Divide() = delete;
-};
+{ };
 
 template <typename R>
 struct Increment: Plus<R, Rational<1LL>>
-{
-    Increment() = delete;
-};
+{ };
 
 template <typename R>
 struct Decrement: Minus<R, Rational<1LL>>
-{
-    Decrement() = delete;
-};
+{ };
 
 template <typename _Lhs, typename _Rhs>
 struct Average: Divide<Plus<_Lhs, _Rhs>, Rational<2LL>>
-{
-    Average() = delete;
-};
+{ };
 
 /**
  *  @enum SqrtConstants is an enumeration class
@@ -537,9 +494,7 @@ struct SqrtImpl
  */
 template <typename X, long long precision = (long long)SqrtConstants::tolerance>
 struct Sqrt: SqrtDetails::SqrtImpl<X, (long long)precision>::type
-{
-    Sqrt() = delete;
-};
+{ };
 
 TMP_END
 

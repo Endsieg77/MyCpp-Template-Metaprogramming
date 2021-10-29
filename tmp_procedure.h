@@ -65,7 +65,6 @@ namespace DoDetails
 template <auto Procedure>
 struct Do: Prototype<Do<Procedure>>
 {
-    Do() = delete;
     template <typename Cond>
     struct If
         : siebenzevan::If<Cond,

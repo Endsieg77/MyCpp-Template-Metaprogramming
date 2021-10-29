@@ -17,7 +17,8 @@
 
 TMP_BEGIN
 
-inline static constexpr long long __abs__(long long _x)
+inline
+static constexpr long long __abs__(long long _x)
 {
     return
     _x > 0 ? _x: -_x;
@@ -56,14 +57,12 @@ constexpr long long lcm_type_v = lcm_type<M, N>::value;
 
 struct Infinity: RationalPrototype<Infinity>
 {
-    Infinity() = delete;
     static constexpr long long num   = 1LL;
     static constexpr long long denom = 0LL;
 };
 
 struct NegInfinity: RationalPrototype<NegInfinity>
 {
-    NegInfinity() = delete;
     static constexpr long long num   = -1LL;
     static constexpr long long denom = 0LL;
 };
@@ -77,7 +76,6 @@ template <long long _Q, long long _P = 1>
 struct Rational: RationalPrototype<Rational<_Q, _P>>
 {
     static_assert(_P, "Divide Zero Exception!");
-    Rational() = delete;
 private:
     enum __trivial: long long
     {
@@ -114,7 +112,6 @@ public:
 template <long long _Q>
 struct Rational<_Q>: RationalPrototype<Rational<_Q>>
 {
-    Rational() = delete;
     static constexpr long long num   = _Q;
     static constexpr long long denom = 1LL;
     static constexpr long long value = _Q;
@@ -133,14 +130,12 @@ struct Integer: Rational<_Num>
     __TAGS__(Tags::rational, Tags::integer);
     using real = Rational<_Num>;
     using imag = Rational<0>;
-    Integer() = delete;
 };
 
 template <typename R>
 struct Numer: Integer<R::num>
 {
     static_assert(Eval<IsRational<R>>, "Arguement MUST be Rational.");
-    Numer() = delete;
     __TAGS__(Tags::integer);
     static constexpr long long value = R::num;
 };
@@ -149,10 +144,64 @@ template <typename R>
 struct Denom: Integer<R::denom>
 {
     static_assert(Eval<IsRational<R>>, "Arguement MUST be Rational.");
-    Denom() = delete;
     __TAGS__(Tags::integer);
     static constexpr long long value = R::denom;
 };
+
+using Zero      = Rational<0>;
+using One       = Rational<1>;
+using Two       = Rational<2>;
+using Three     = Rational<3>;
+using Four      = Rational<4>;
+using Five      = Rational<5>;
+using Six       = Rational<6>;
+using Seven     = Rational<7>;
+using Eight     = Rational<8>;
+using Nine      = Rational<9>;
+using Ten       = Rational<10>;
+using Eleven    = Rational<11>;
+using Twelve    = Rational<12>;
+using Thirteen  = Rational<13>;
+using Fourteen  = Rational<14>;
+using Fifteen   = Rational<15>;
+using Sixteen   = Rational<16>;
+using Seventeen = Rational<17>;
+using Eighteen  = Rational<18>;
+using Nineteen  = Rational<19>;
+using Twenty    = Rational<20>;
+using Thirty    = Rational<30>;
+using Forty     = Rational<40>;
+using Fifty     = Rational<50>;
+using Sixty     = Rational<60>;
+using Seventy   = Rational<70>;
+using Eighty    = Rational<80>;
+using Ninety    = Rational<90>;
+using Hundred   = Rational<100>;
+using Thousand  = Rational<1000>;
+
+template <typename R>
+using Twenty_   = Twenty::plus<R>;
+
+template <typename R>
+using Thirty_   = Thirty::plus<R>;
+
+template <typename R>
+using Forty_   = Forty::plus<R>;
+
+template <typename R>
+using Fifty_   = Fifty::plus<R>;
+
+template <typename R>
+using Sixty_   = Sixty::plus<R>;
+
+template <typename R>
+using Seventy_ = Seventy::plus<R>;
+
+template <typename R>
+using Eighty_ = Eighty::plus<R>;
+
+template <typename R>
+using Ninety_ = Ninety::plus<R>;
 
 TMP_END
 
