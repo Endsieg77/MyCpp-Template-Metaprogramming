@@ -1,18 +1,12 @@
 /**
  *  @file   tmp_algorithms.h
  *  @author Offensive77
- *  @brief  This header defines the algorithms of CTMP.
- *  @modified: 2021/10/21 Thurs.
+ *  @brief  This header defines several algorithms of Csiebenzevan.
+ *  @copyright reserved.
  */
 
 #ifndef _TMP_ALGORITHMS_H_
 #define _TMP_ALGORITHMS_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 TMP_BEGIN
 
@@ -26,7 +20,7 @@ struct Pair: PairPrototype
 
 /** 
  *  @brief  scheme-style cons.
- *  @struct TMP.cons as elements combinator.
+ *  @struct siebenzevan.cons as elements combinator.
  *  @param _Car represents the first element,
  *  @param _Cdr the second.
  */
@@ -36,7 +30,7 @@ struct cons: Pair<_Car, _Cdr>
 
 /** 
  *  @brief  scheme-style car
- *  @struct TMP.car yield first element of cons
+ *  @struct siebenzevan.car yield first element of cons
  */
 template <typename Cons>
 struct car: Cons::car
@@ -46,7 +40,7 @@ struct car: Cons::car
 
 /** 
  *  @brief  scheme-style cdr
- *  @struct TMP.cdr yield second element of cons
+ *  @struct siebenzevan.cdr yield second element of cons
  */
 template <typename Cons>
 struct cdr: Cons::cdr
@@ -77,7 +71,7 @@ namespace RangeSumDetails
 }
 
 /**
- *  @struct TMP.RangeSum calculates the sum of
+ *  @struct siebenzevan.RangeSum calculates the sum of
  *          f(x) for all x in range(from, to, step)
  *  @param _F receives a cxx11 lambda expression,
  *         its default value the Id(x) transformation.
@@ -96,7 +90,7 @@ struct RangeSum:
 { };
 
 /** 
- *  @struct TMP.RangeSum<from, to, 0> for conditions
+ *  @struct siebenzevan.RangeSum<from, to, 0> for conditions
  *          where step equals zero. It has no static
  *          value member.
  */
@@ -150,7 +144,7 @@ constexpr long long RangeSum_v = RangeSum<_From, _To, _Step, _F>::value;
 #endif
 
 /**
- *  @struct If and Cond statement for TMP.
+ *  @struct If and Cond statement for siebenzevan.
  */
 namespace IfDetails
 {
@@ -168,7 +162,7 @@ namespace IfDetails
 }
 
 /**
- *  @struct TMP.If.
+ *  @struct siebenzevan.If.
  *  @brief This implements if...else structure
  *  @param Boolean has a static bool member called value.
  *  When Boolean::value is true. If::type is @param _Then's,
@@ -181,7 +175,7 @@ struct If: IfDetails::IfImpl<_Boolean::value, _Then, _Else>, ConditionPrototype
 };
 
 /**
- *  @struct TMP.Case
+ *  @struct siebenzevan.Case
  *  @brief Cond structure's branches.
  */
 template <typename _Pred, typename _Conseq>
@@ -191,9 +185,9 @@ struct Case: Pair<_Pred, _Conseq>, ConditionPrototype
 };
 
 /**
- *  @struct TMP.Else
+ *  @struct siebenzevan.Else
  *  @brief The default choice of condition statement,
- *         Iin which it also causes logical short-circuit.
+ *  in which it also causes logical short-circuit.
  */
 template <typename _Else>
 struct Else: cons<True_type, _Else>, ConditionPrototype
@@ -217,8 +211,8 @@ struct CondImpl<_First, Pred_Conseq...>
 
 /**
  *  @struct _LstImpl. The last branch should not be
- *          seen as least important. On contrary, 
- *          It shall be dealt with more cautiously.
+ *  seen as least important. On contrary, It shall be
+ *  dealt with more cautiously.
  */
 template <bool, typename _Tp>
 struct _LstImpl
@@ -247,9 +241,9 @@ struct Cond: CondDetails::CondImpl<Pred_Conseq...>::type, ConditionPrototype
 { };
 
 /**
- *  @struct TMP.Negate yields the opposition of Rational,
- *          which equals to Minus<Rational<0>, Rational<what>>
- *          to some degree.
+ *  @struct siebenzevan.Negate yields the opposition of Rational,
+ *  which equals to Minus<Rational<0>, Rational<what>> to some
+ *  degree.
  */
 template <typename R>
 struct Negate: RationalPrototype<Negate<R>>
@@ -274,22 +268,22 @@ struct AbsImpl<R, false>: Negate<R>
 }
 
 /**
- *  @struct TMP.Abs yields absolute value of Rational.
+ *  @struct siebenzevan.Abs yields absolute value of Rational.
  */
 template <typename R>
 struct Abs: AbsDetails::AbsImpl<R, Greater<R, Rational<0>>::value>
 { };
 
 /**
- *  @struct TMP.Square yields square of Rational.
+ *  @struct siebenzevan.Square yields square of Rational.
  */
 template <typename R>
 struct Square: Rational<R::num * R::num, R::denom * R::denom>
 { };
 
 /**
- *  @namespace TMP.BasicDetails hides the implementation of
- *             the four basic arithmetic operator +, -, *, /.
+ *  @namespace siebenzevan.BasicDetails hides the implementation of
+ *  the four basic arithmetic operator +, -, *, /.
  */
 namespace ArithmeticDetails
 {
@@ -443,9 +437,9 @@ struct Average: Divide<Plus<_Lhs, _Rhs>, Rational<2LL>>
 
 /**
  *  @enum SqrtConstants is an enumeration class
- *        where resides some preset constants
- *        for @struct Sqrt & its hidden
- *        implementation @struct SqrtImpl.
+ *  where resides some preset constants for 
+ *  @struct Sqrt & its hidden implementation
+ *  @struct SqrtImpl.
  */
 enum class SqrtConstants: long long
 {
@@ -484,9 +478,9 @@ struct SqrtImpl
 }
 
 /**
- *  @struct TMP.Sqrt Compile-time Square root. Yahooooo!
- *  It receives @param X.
- *  @return square root of X by its value member.
+ *  @struct siebenzevan.Sqrt Compile-time Square root. Yahooooo!
+ *  @param X, which is a Rational, is received.
+ *  @return square root of X by its static value member.
  *  If the form of X is too complicated, the program may
  *  meet with an integer overflow.
  *  @param precision means the result will fall on the area

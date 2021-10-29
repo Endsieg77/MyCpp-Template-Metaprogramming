@@ -1,19 +1,15 @@
 /**
  *  @file   tmp_rational.h
  *  @author Offensive77
- *  @brief  This header defines the rational number in TMP.
- *  @established: 2021/10/21 Thurs.
- *  @modified:    2021/10/21 Thurs.
+ *  @brief  This header defines the rational number in TMP,
+ *  along with the compile-time gcd, lc, the Infinity and
+ *  the Negative Infinity. Though less than one time did I
+ *  ever used them lol.
+ *  @copyright reserved.
  */
 
 #ifndef _TMP_RATIONAL_H_
 #define _TMP_RATIONAL_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 TMP_BEGIN
 
@@ -25,7 +21,7 @@ static constexpr long long __abs__(long long _x)
 }
 
 /** 
- *  @struct TMP.gcd_type is the compile-time
+ *  @struct siebenzevan.gcd_type is the compile-time
  *          gcd algorithm implementation.
  */
 template <long long M, long long N>
@@ -42,7 +38,7 @@ template <long long M, long long N>
 constexpr long long gcd_type_v = gcd_type<M, N>::value;
 
 /** 
- *  @struct TMP.lcm_type is the compile-time
+ *  @struct siebenzevan.lcm_type is the compile-time
  *          lcm algorithm implementation.
  */
 template <long long M, long long N>
@@ -68,11 +64,11 @@ struct NegInfinity: RationalPrototype<NegInfinity>
 };
 
 /** 
- *  @struct TMP.Rational implements the Rational template.
+ *  @struct siebenzevan.Rational implements the Rational template.
  *          It uses gcd_type for compile-time simplification.
  *  @param _Q is the numerator, @param _P the denominator.
  */
-template <long long _Q, long long _P = 1>
+template <long long _Q, long long _P = 1LL>
 struct Rational: RationalPrototype<Rational<_Q, _P>>
 {
     static_assert(_P, "Divide Zero Exception!");
@@ -91,10 +87,7 @@ public:
 
     static std::string to_string()
     {
-        if
-        #if __cplusplus >= 201703L
-        constexpr
-        #endif
+        if __CXX17_IF_CONSTEXPR__
         (denom == 1)
             return std::to_string(num);
         else
@@ -106,7 +99,7 @@ public:
 };
 
 /** 
- *  @struct TMP.Rational<_Q> defines simple method to
+ *  @struct siebenzevan.Rational<_Q> defines simple method to
  *          define integers.
  */
 template <long long _Q>
@@ -202,6 +195,12 @@ using Eighty_ = Eighty::plus<R>;
 
 template <typename R>
 using Ninety_ = Ninety::plus<R>;
+
+template <long long Q, long long P = 1>
+constexpr double Rational_v = Rational<Q, P>::value;
+
+template <long long _Num>
+constexpr long long Integer_v = Integer<_Num>::value;
 
 TMP_END
 

@@ -1,9 +1,8 @@
 /**
  *  @file   tmp_map.h
  *  @author Offensive77
- *  @brief  This header defines the map in TMP.
- *  @established: 2021/10/20 Fri.
- *  @modified:    2021/10/21 Fri.
+ *  @brief  This header defines date structure the map in siebenzevan.
+ *  @copyright reserved.
  */
 
 #ifndef _TMP_MAP_H_
@@ -100,7 +99,7 @@ template <typename _First, typename... _Mapto>
 struct ReadHelper<Map<_First, _Mapto...>>
 {
     using map  = Map<_First, _Mapto...>;
-    using type = map::type;
+    using type = typename map::type;
     static std::ostream &print(std::ostream &os)
     {
         os

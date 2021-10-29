@@ -1,19 +1,12 @@
 /**
  *  @file   tmp_complex.h
  *  @author Offensive77
- *  @brief  This header defines the complex number in TMP.
- *  @established: 2021/10/20 Wed.
- *  @modified:    2021/10/21 Thurs.
+ *  @brief  This header defines the complex number in siebenzevan.
+ *  @copyright reserved.
  */
 
 #ifndef _TMP_COMPLEX_H_
 #define _TMP_COMPLEX_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 #include <complex>
 
@@ -54,10 +47,30 @@ namespace toStringDetails
     }
 }
 
+/**
+ *  @struct Complex
+ *  @param _Re receives a Rational to construct its real part
+ *  @param _Im its imaginary part
+ *  Its default value will be 0.
+ */
 template <typename _Re = Rational<0LL>, typename _Im = Rational<0LL>>
 struct Complex: Prototype<Complex<_Re, _Im>>
 {
-    Complex() = delete;
+    template <typename _C2>
+    struct plus: Plus<Complex, _C2>
+    { };
+
+    template <typename _C2>
+    struct minus: Minus<Complex, _C2>
+    { };
+
+    template <typename _C2>
+    struct multiply: Multiply<Complex, _C2>
+    { };
+    
+    template <typename _C2>
+    struct divide: Divide<Complex, _C2>
+    { };
     using real = _Re;
     using imag = _Im;
     __TAGS__(Tags::complex);
@@ -68,15 +81,11 @@ struct Complex: Prototype<Complex<_Re, _Im>>
 
 template <typename C>
 struct Real: C::real
-{
-    Real() = delete;
-};
+{ };
 
 template <typename C>
 struct Imag: C::imag
-{
-    Imag() = delete;
-};
+{ };
 
 TMP_END
 

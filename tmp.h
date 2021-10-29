@@ -3,7 +3,7 @@
  *  @author Offensive77
  *  @brief  Include this header to obtain all TMP facilities
  *          in my standard library.
- *  @modified: 2021/10/20 Wed.
+ *  @copyright reserved.
  */
 
 #ifndef _TMP_H_

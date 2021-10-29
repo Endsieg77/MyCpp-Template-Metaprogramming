@@ -1,11 +1,13 @@
+/**
+ *  @file tmp_symbol.h
+ *  @author @irrequietus contributes most of these.
+ *  @brief The most content of this header are copied from the
+ *  Internet 'coz I cannot handle part of techniques to implement
+ *  the functions I need.
+ */
+
 #ifndef _TMP_SYMBOL_H_
 #define _TMP_SYMBOL_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 TMP_BEGIN
 
@@ -15,6 +17,7 @@ namespace SymbolDetails
 template <char... _Char>
 struct Symbol: SymbolPrototype<Symbol<_Char...>>
 {
+    Symbol() {}
     static constexpr char value[sizeof...(_Char) + 1] = { _Char ..., '\0' };
 };
 

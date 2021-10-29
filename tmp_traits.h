@@ -2,17 +2,11 @@
  *  @file   tmp_traits.h
  *  @author Offensive77
  *  @brief  Traits for my templates.
- *  @modified: 2021/10/20 Wed.
+ *  @copyright reserved.
  */
 
 #ifndef _TMP_TRAITS_H_
 #define _TMP_TRAITS_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 #define __TAGS__(...) static constexpr tag_type tag = tag_helper(__VA_ARGS__);
 #define __HAS_TAG__(_tag_) bool(_Tp::tag & (tag_type)(_tag_))
@@ -43,11 +37,19 @@ enum class Tags: tag_type
     procedure = 1ULL << 10ULL,
 };
 
+/**
+ *  tag_helper uses C++ 17 fold expression to parse the
+ *  outcome of its input value's bitwise OR.
+ */
 template<typename... Tag>
 inline constexpr tag_type tag_helper(Tag&&... tags)
 {
     return ((tag_type)tags | ...);
 }
+
+/**
+ *  My type traits, dependent on SFINAE (std::enable_if)
+ */
 
 template <typename _Tp, typename = void>
 struct IsNull: LogicalPrototype<IsNull<_Tp>>

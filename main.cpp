@@ -7,9 +7,6 @@ __ENABLE_CONVENIENT_TMP__
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-
     let r0   = make_rat(0);
     let r1   = make_rat(4 _over 6);
     let r2   = make_rat(11 _over 4);
@@ -34,14 +31,14 @@ int main()
           _else(r3));
 
     let map =
-      Map<
-          cons<c2, r1>,
-          cons<c1, r3>,
-          cons<c3, r2>,
-          cons<Plus<c1, c3>, r4>,
-          cons<symbol("Hello, world."), c3>>;
+      make_map(
+          _pair(c2 _with r1),
+          _pair(c1 _with r3),
+          _pair(c3 _with r2),
+          _pair(c1 _plus(c3) _with r4),
+          _pair(symbol("Hello, world.") _with c3));
 
-    metaprint<symbol("wssb")> (cout) newline;
+    metadisplay(symbol("wssb")) newline;
     map _shall::showItsMetainfo::with (cout) newline;
     map _shall::showItsMetainfo::twice::with (cout) newline;
     map _shall::showItsMetainfo::_for<4>::times::with (cout) newline;

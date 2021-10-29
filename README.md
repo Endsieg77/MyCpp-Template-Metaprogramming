@@ -17,6 +17,33 @@ using namespace siebenzevan;
 
 to make TMP more convenient for you.
 
+## Some basic rules
+
+All type checks are reliant on compile-time SFINAE.
+
+```cpp
+value   := eval Variable
+
+Logical := Object <v> type
+    <v>     = is, is _not
+    <type>  = rational, complex, map, ...
+
+Logical := Logical<bi-op>Logical
+    <bi-op> = _and, _or
+
+Logical := _not Logical
+
+Logical := Number<bi-op>Number
+    <bi-op> = eq, n_eq, less, greater, less_eq, greater_eq
+Complex excluded
+
+Number  := Number<bi-op>Number
+    <bi-op> = plus, minus, divide, multiply
+
+Number  := <op>Number
+    <op>    = sqrt, abs, negate, increment, decrement, identity, ...
+```
+
 ## Use `typedef`s as variable definitions
 
 Like this:
@@ -166,6 +193,17 @@ cout << Eval<r1::is::rational> << endl;
 cout << Eval<r1::is::_not::rational> << endl;
 ```
 
+Note that my operations are left-associative.
+So
+```cpp
+r1::plus<r3>::minus<r3>
+```
+is equal to (r1 + r2) - r3.
+```cpp
+r1::plus<r3::minus<r3>>
+```
+is equal to (r1 + (r2 - r3)).
+
 ## Clause
 
 ```cpp
@@ -177,7 +215,7 @@ cout << Eval<It::is::False::that<
 
 ## Do... if
 
-Template `Do<[LambdaExpr]>::If<[Logical]>`. Only available after C++17.
+Template `Do<[LambdaExpr]>::If<[Logical]>`. Only available after C++20.
 
 Lambda can have some parameters, and it may not be called instantly.
 
@@ -230,5 +268,7 @@ let _res =
                 _then r4),
       _else(r3));
 
-let c3   = _make_complex(_make_rat(19 _over 7), _make_rat(-3 _over 11));
+let c3 = _make_complex(_make_rat(19 _over 7), _make_rat(-3 _over 11));
+
+display evaluate(_sqrt(make_rat(414 _over 567))) newline;
 ```

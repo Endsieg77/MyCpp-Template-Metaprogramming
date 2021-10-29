@@ -1,7 +1,16 @@
-#ifndef __TMP_DEFS_H__
-#define __TMP_DEFS_H__
+/**
+ *  @name tmp_defs.h
+ *  @author Offensive77
+ *  @brief Some macros are defined in this header. And if you are willing to
+ *  Enable them, just define __ENABLE_TMP_plusplus__ in front of the inclusion
+ *  of @file "tmp.h".
+ *  @copyright reserved.
+ */
+#ifndef _TMP_DEFS_H_
+#define _TMP_DEFS_H_
 
 #define display std::cout << std::boolalpha <<
+#define metadisplay(_Tp) metaprint<_Tp> (std::cout)
 #define newline << std::endl;
 
 #define _is ::is
@@ -46,8 +55,11 @@
 #define make_int(_num) Integer<(_num)>
 #define make_rat(_rat) Rational<_rat>
 #define make_complex(_rat1, _rat2) Complex<_rat1, _rat2>
+#define make_map(...) Map<__VA_ARGS__>
 #define _over ,
 #define _sqrt(_rat) Sqrt<_rat>
+#define _pair(__) cons<__>
+#define _with ,
 #define lambda(...) [=] (__VA_ARGS__)
 
 /* Conditions: */

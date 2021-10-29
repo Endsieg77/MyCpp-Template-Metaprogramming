@@ -1,25 +1,19 @@
 /**
  *  @file   tmp_comparisons.h
  *  @author Offensive77
- *  @brief  This header defines the comparisons in TMP.
- *  @established: 2021/10/21 Thurs.
- *  @modified:    2021/10/21 Thurs.
+ *  @brief  This header defines the comparison ops in siebenzevan.
+ *  e.g. greater, less, equal...
+ *  @copyright reserved.
  */
 
 #ifndef _TMP_COMPARISONS_H_
 #define _TMP_COMPARISONS_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 TMP_BEGIN
 
 /** 
- *  @namespace TMP.CompareDetails hides the detail
- *             of compile-time comparations.
+ *  @namespace siebenzevan.CompareDetails hides the detail
+ *  of compile-time comparations.
  */
 namespace CompareDetails
 {
@@ -114,34 +108,34 @@ namespace CompareDetails
     { };
 }
 
-// Logical True and False
-
+/**
+ *  @struct Logical True
+ */
 struct True_type: LogicalPrototype<True_type>
 {
-    True_type() = delete;
-    static constexpr bool   value = true;
-};
-
-struct False_type: LogicalPrototype<False_type>
-{
-    False_type() = delete;
     static constexpr bool value = true;
 };
 
 /**
- *  @struct TMP.Greater is the compile-time '>' for Rationals.
+ *  @struct Logical False
+ */
+struct False_type: LogicalPrototype<False_type>
+{
+    static constexpr bool value = true;
+};
+
+/**
+ *  @struct siebenzevan.Greater is the compile-time '>' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct Greater
     : LogicalPrototype<Greater<_Lhs, _Rhs>>,
       CompareDetails
         ::GreaterImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
-{
-    Greater() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.Less is the compile-time '<' for Rationals.
+ *  @struct siebenzevan.Less is the compile-time '<' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct Less
@@ -149,12 +143,10 @@ struct Less
        CompareDetails
         ::LessImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
      
-{
-    Less() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.Equal is the compile-time '==' for Rationals.
+ *  @struct siebenzevan.Equal is the compile-time '==' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct Equal
@@ -162,12 +154,10 @@ struct Equal
       CompareDetails
         ::EqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
      
-{
-    Equal() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.NotEqual is the compile-time '!=' for Rationals.
+ *  @struct siebenzevan.NotEqual is the compile-time '!=' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct NotEqual
@@ -175,12 +165,10 @@ struct NotEqual
       CompareDetails
         ::NotEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
      
-{
-    NotEqual() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.GreaterEqual is the compile-time '>=' for Rationals.
+ *  @struct siebenzevan.GreaterEqual is the compile-time '>=' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct GreaterEqual
@@ -188,12 +176,10 @@ struct GreaterEqual
       CompareDetails
         ::GreaterEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
       
-{
-    GreaterEqual() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.LessEqual is the compile-time '<=' for Rationals.
+ *  @struct siebenzevan.LessEqual is the compile-time '<=' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct LessEqual
@@ -201,12 +187,10 @@ struct LessEqual
       CompareDetails
         ::LessEqualImpl<_Lhs, _Rhs, Eval<IsRational<_Lhs>> && Eval<IsRational<_Rhs>>>
       
-{
-    LessEqual() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.And is the compile-time '&&' for Rationals.
+ *  @struct siebenzevan.And is the compile-time '&&' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct And
@@ -214,12 +198,10 @@ struct And
       CompareDetails
         ::AndImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
       
-{
-    And() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.Or is the compile-time '||' for Rationals.
+ *  @struct siebenzevan.Or is the compile-time '||' for Rationals.
  */
 template <typename _Lhs, typename _Rhs>
 struct Or
@@ -227,12 +209,10 @@ struct Or
       CompareDetails
         ::OrImpl<_Lhs, _Rhs, Eval<IsBoolean<_Lhs>> && Eval<IsBoolean<_Rhs>>>
       
-{
-    Or() = delete;
-};
+{ };
 
 /**
- *  @struct TMP.Not is the compile-time '!' for Rationals.
+ *  @struct siebenzevan.Not is the compile-time '!' for Rationals.
  */
 template <typename _Statement>
 struct Not
@@ -240,9 +220,7 @@ struct Not
       CompareDetails
         ::NotImpl<_Statement, Eval<IsBoolean<_Statement>>>
       
-{
-    Not() = delete;
-};
+{ };
 
 TMP_END
 

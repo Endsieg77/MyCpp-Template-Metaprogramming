@@ -1,11 +1,13 @@
+/**
+ *  @file tmp_print.h
+ *  @author Offensive77
+ *  @brief In this header I introduced the methods of output the
+ *  TMP Objects, which i call metaprint, meaning it is the print
+ *  of print. In fact it deserves the name.
+ *  @copyright reserved.
+ */
 #ifndef _TMP_PRINT_H_
 #define _TMP_PRINT_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 TMP_BEGIN
 

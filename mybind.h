@@ -1,11 +1,10 @@
+/**
+ *  @file mybind.h
+ *  for the time being deprecated.
+ */
+
 #ifndef _MY_BIND_H_
 #define _MY_BIND_H_
-#ifndef TMP_BEGIN
-#define TMP_BEGIN namespace TMP {
-#endif
-#ifndef TMP_END
-#define TMP_END   }
-#endif
 
 TMP_BEGIN
 
