@@ -22,7 +22,7 @@ to make TMP more convenient for you.
 All type checks are reliant on compile-time SFINAE.
 
 ```cpp
-value   := eval Variable
+value := eval Variable
 
 Logical := Object <v> type
     <v>     = is, is _not
@@ -41,7 +41,7 @@ Number  := Number<bi-op>Number
     <bi-op> = plus, minus, divide, multiply
 
 Number  := <op>Number
-    <op>    = sqrt, abs, negate, increment, decrement, identity, ...
+    <op> = sqrt, abs, negate, increment, decrement, identity, ...
 ```
 
 ## Use `typedef`s as variable definitions
@@ -85,6 +85,16 @@ cout << RangeSum_v<114, 514, 19, [](int &&_19810)
 cout << RangeSum_v<114, 514> << endl;
 ```
 
+## Use predefined variable templates
+
+Like `One`, `Two`, `Three`, ...
+`One::_<Thousand>::_and<Fourty_<Five>>` (Equals to `Rational<1045, 1>`)
+```cpp
+let num =
+One::_<Thousand>::_and<Forty_<Five>>;
+metadisplay(num) newline;
+```
+
 ## Compile-time Square Root
 
 Sounds really cooool? Yes. I take pride in this, too.
@@ -97,7 +107,7 @@ An example:
 cout << Sqrt<Rational<1191ll, 443ll>>::value << endl;
 ```
 
-Take care. Number **too great** may cause an **integer overflow**.
+Take care. Number **too weird** may cause an **integer overflow**.
 
 We can also assign a precision in the second parameter of Sqrt.
 
@@ -107,11 +117,19 @@ Sqrt<Rational<1191ll, 443ll>, 0xffff>::value
 
 Which means the error would fall on the O(*answer*, 1/0xffff).
 
+Sort of anti-intuitive XD.
+
 ## Basic Arithmetic Operations
 
 `Plus<_Lhs, _Rhs>`, `Minus<_Lhs, _Rhs>`, `Multiply<_Lhs, _Rhs>`, `Divide<_Lhs, _Rhs>`
 
 They receive Rational as their parameters.
+
+We can also use them like a chain.
+
+```cpp
+r1::plus<r3>::divide<r3>::plus<Two::multiply<Four>>;
+```
 
 ## Condition Statement `If` and `Cond`
 
@@ -124,6 +142,7 @@ Here are some examples:
 ```cpp
 using _if = If<Greater<r1, r2>, r1, r2>;
 cout << _if::value << endl;
+
 using _res =
 Cond<
     Case<And<Less<r2, r1>, Less<r4, r1>>, r1>,
@@ -132,6 +151,11 @@ Cond<
     Else<r3>>;
 cout << _res::value << endl;
 ```
+template `If` can also be used in inheritance, to choose
+
+between `_Then` and `_Else` dependent on the first `Boolean` Object.
+
+This was applied in implementing the `Sqrt`.
 
 ## Complex Numbers
 
@@ -141,7 +165,9 @@ using c2 = Complex<Rational<3, 4>, Rational<-1>>;
 using c3 = Complex<Rational<19, 7>, Rational<-3, 11>>;
 ```
 
-They have their own `Plus`, `Minus`, `Multiply`, `Divide` implementation.
+They have their own `Plus`, `Minus`, `Multiply`, `Divide` implementation,
+
+and also call like a chain.
 
 ## Data Structure `Map`
 
@@ -267,6 +293,14 @@ let _res =
       _case(r0 _is greater_than(r1)
                 _then r4),
       _else(r3));
+
+let map =
+  make_map(
+      _pair(c2 _with r1),
+      _pair(c1 _with r3),
+      _pair(c3 _with r2),
+      _pair(c1 _plus(c3) _with r4),
+      _pair(symbol("Hello, world.") _with c3));
 
 let c3 = _make_complex(_make_rat(19 _over 7), _make_rat(-3 _over 11));
 
